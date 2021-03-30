@@ -1,0 +1,115 @@
+name: Codecoverage
+
+# Runs codeception unit and wpunit tests, merges the code coverage, commits the html report to
+# GitHub Pages, generates a README badge with the coverage percentage.
+#
+# Requires a gh-pages branch already created.
+#
+# @author BrianHenryIE
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      # Fails here when pages branch does not exist.
+
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: tests/_output/html
+
+#      - name: Make envfile from Secrets
+#        uses: SpicyPizza/create-envfile@v1
+#        with:
+#          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#          file_name: .env.secret
+
+#      - name: Create Composer auth.json from Secrets
+#        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
+
+      - name: Read .env.testing
+        uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env.testing
+
+      - name: Configure MySQL
+        run: |
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE USER '"$TEST_DB_USER"'@'%' IDENTIFIED WITH mysql_native_password BY '"$TEST_DB_PASSWORD"';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_SITE_DB_NAME"; USE "$TEST_SITE_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_SITE_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+
+      - name: Update configs for GA
+        run: |
+          find . -depth \( -name '.env.testing' \) -exec sed -i "s/=\"127.0.0.1\"/=\"127.0.0.1:${{ job.services.mysql.ports['3306'] }}\"/g" {} +
+          find . -depth \( -name 'composer.json' \) -exec sed -i "s/127.0.0.1/127.0.0.1:${{ job.services.mysql.ports['3306'] }}/g" {} +
+          find . -depth \( -name '.env.testing' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+
+      - name: Run composer install
+        uses: php-actions/composer@v1
+
+      - name: Run unit tests
+        run: vendor/bin/codecept run unit --coverage unit.cov || true;
+
+      - name: Run wpunit tests
+        run: vendor/bin/codecept run wpunit --coverage wpunit.cov || true;
+
+      - name: Clear previous code coverage
+        run: |
+          cd tests/_output/html
+          rm -rf *
+          cd ../../..
+
+      - name: Merge code coverage
+        run: vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output --text;
+
+      - name: Edit phpcov html output to work with gh-pages
+        run: |
+          cd tests/_output/html
+          mv .css css; find . -depth -name '*.html' -exec sed -i "s/.css\//css\//" {} +
+          mv .icons icons; find . -depth -name '*.html' -exec sed -i "s/.icons\//icons\//" {} +
+          mv .js js; find . -depth -name '*.html' -exec sed -i "s/.js\//js\//" {} +
+          git add *
+          cd ../../..
+
+      - name: Discard MySQL port changes in .env before commiting other changes
+        run: |
+          git checkout -- .env.testing
+
+      - name: Commit code coverage to gh-pages
+        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+        with:
+          repository: tests/_output/html
+          branch: gh-pages
+          commit_message: "Commit code coverage to gh-pages"
+          commit_options:
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Update README badge
+        run: vendor/bin/php-coverage-badger tests/_output/clover.xml .github/coverage.svg PHPUnit
+
+      - name: Commit code coverage badge
+        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+        with:
+          file_pattern: .github/coverage.svg
+          commit_message: "Commit code coverage badge"

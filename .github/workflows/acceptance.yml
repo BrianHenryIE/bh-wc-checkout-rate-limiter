@@ -1,0 +1,83 @@
+name: Acceptance
+
+# Runs Wp-Browser Codeception acceptance tests.
+#
+# @author BrianHenryIE
+
+on: ["push"]
+
+jobs:
+
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Read .env.testing
+        uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env.testing
+
+#      - name: Make envfile from Secrets
+#        uses: SpicyPizza/create-envfile@v1
+#        with:
+#          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#          file_name: .env.secret
+
+#      - name: Create Composer auth.json
+#        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
+
+      - name: Configure MySQL
+        run: |
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE USER '"$TEST_DB_USER"'@'%' IDENTIFIED WITH mysql_native_password BY '"$TEST_DB_PASSWORD"';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_SITE_DB_NAME"; USE "$TEST_SITE_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_SITE_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+
+      - name: Update configs for GA
+        run: |
+          find . -depth \( -name '.env.testing' \) -exec sed -i "s/=\"127.0.0.1\"/=\"127.0.0.1:${{ job.services.mysql.ports['3306'] }}\"/g" {} +
+          find . -depth \( -name 'composer.json' \) -exec sed -i "s/127.0.0.1/127.0.0.1:${{ job.services.mysql.ports['3306'] }}/g" {} +
+          find . -depth \( -name '.env.testing' -o -name '*.cest' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+          find . -depth \( -name 'dump.sql' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+
+
+      - name: Run composer install
+        uses: php-actions/composer@v1
+
+      - name: Create wpconfig ... the composer.json creation didn't work
+        run: |
+          export $(grep -v '^#' .env.testing | xargs);
+          sudo vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root
+
+      - name: Start webserver
+        run: |
+          php -S localhost:8080 -t wordpress/ &
+          sleep 5
+
+      - name: Run acceptance tests
+        run: vendor/bin/codecept run acceptance
+
+      - name: Save config and output on failure
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: acceptance-test-failure
+          path: |
+            tests/_output/*fail.html
+            composer.json
+            wordpress/wp-config.php
+            .env.testing
+            tests/_data/dump.sql

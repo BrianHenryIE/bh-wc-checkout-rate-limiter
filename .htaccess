@@ -1,0 +1,21 @@
+# Serve the contents of /wordpress/ from the root URL for the project.
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^.*bh-wc-checkout-rate-limiter$ [NC,OR]
+RewriteCond %{REQUEST_URI} !wordpress/
+RewriteRule (.*) wordpress/$1 [L]
+
+# Remove /wordpress from any querystring, i.e. it was being added to login redirect.
+RewriteEngine on
+RewriteCond %{QUERY_STRING} ^(.*)%2Fwordpress(.*)$ [NC]
+RewriteRule (.*) %{REQUEST_URI}?%1%2 [R=301,L,NE]
+
+# Enable WP_DEBUG.
+php_flag log_errors On
+php_value error_log "wp-content/php_errors.log"
+
+# Trick WordPress into thinking we're serving REST API over HTTPS.
+SetEnvIf Request_URI api HTTPS=on
+SetEnvIfExpr "%{QUERY_STRING} =~ /api/" HTTPS=on
+
+# Set return type for wp_get_environment_type()
+SetEnv WP_ENVIRONMENT_TYPE local

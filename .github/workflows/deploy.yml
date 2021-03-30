@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: php-actions/composer@master
+      - name: Deploy
+        run: chmod +x ./.github/deploy.sh && ./.github/deploy.sh
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
