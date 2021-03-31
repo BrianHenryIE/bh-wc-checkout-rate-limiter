@@ -62,7 +62,7 @@ The WooCommerce code to handle `/?wc-ajax=checkout` can be found at:
 
 * [class-wc-ajax.php:24](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L24) `add_action( 'template_redirect', array( __CLASS__, 'do_wc_ajax' ), 0 );` 
 * In [WC_Ajax::do_wc_ajax()](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L90)  `do_action( 'wc_ajax_' . $action );`, which in our case `$action` is `checkout`
-* The actual `wc_ajax_checkout` is the [WC_AJAX::checkout()](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L461-L468) function, which I think is [added at default priority 10](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L114-L120), making it easy to slip in before. 
+* The actual `wc_ajax_checkout` is the [WC_AJAX::checkout()](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L461-L468) function, which is [added at default priority 10](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L114-L120), making it easy to slip in before. 
 
 Then, the simplified version of what this plugin does is:
 
@@ -243,4 +243,7 @@ See [github.com/BrianHenryIE/WordPress-Plugin-Boilerplate](https://github.com/Br
 
 # Acknowledgements
 
-https://www.reddit.com/user/bonadzz/
+* [Reddit user bonadzz](https://www.reddit.com/user/bonadzz/) for chatting with me about the problem and sharing code
+* [Nikola Poša](https://github.com/nikolaposa) for his [nikolaposa/rate-limit](https://github.com/nikolaposa/rate-limit/) rate limiter library
+* [Anton Ukhanev](https://github.com/XedinUnknown) for his [wp-oop/transient-cache](https://github.com/wp-oop/transient-cache) PSR-16 wrapper for WP transients
+  
