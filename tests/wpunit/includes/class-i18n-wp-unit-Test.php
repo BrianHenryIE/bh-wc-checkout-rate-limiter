@@ -6,7 +6,7 @@
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
 /**
  * Class I18n_Test
@@ -17,6 +17,8 @@ class I18n_WP_Unit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * Checks if the filter run by WordPress in the load_plugin_textdomain() function is called.
+	 *
+	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\I18n::load_plugin_textdomain
 	 *
 	 * @see load_plugin_textdomain()
 	 */
@@ -34,8 +36,8 @@ class I18n_WP_Unit_Test extends \Codeception\TestCase\WPTestCase {
 		};
 
 		add_filter( 'plugin_locale', $filter, 10, 2 );
-		
-		$i18n         = new I18n();
+
+		$i18n = new I18n();
 
 		$i18n->load_plugin_textdomain();
 

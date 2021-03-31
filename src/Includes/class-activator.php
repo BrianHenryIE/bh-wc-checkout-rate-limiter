@@ -2,14 +2,14 @@
 /**
  * Fired during plugin activation
  *
- * @link       http://example.com
+ * @link       https://BrianHenryIE.com
  * @since      1.0.0
  *
  * @package    BH_WC_Checkout_Rate_Limiter
  * @subpackage BH_WC_Checkout_Rate_Limiter/includes
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
 /**
  * Fired during plugin activation.
@@ -23,14 +23,24 @@ namespace BH_WC_Checkout_Rate_Limiter\Includes;
  */
 class Activator {
 
+	const ACTIVATED_TIME_OPTION_KEY = 'bh_wc_checkout_rate_limiter_activated_time';
+
 	/**
-	 * Short Description. (use period)
+	 * Record each time the plugin has been activated.
 	 *
-	 * Long Description.
+	 * I.e. was the plugin active when the denial of service attack happened?
 	 *
 	 * @since    1.0.0
 	 */
 	public static function activate(): void {
+
+		$option_key = self::ACTIVATED_TIME_OPTION_KEY;
+
+		$activations = get_option( $option_key, array() );
+
+		$activations[] = time();
+
+		update_option( $option_key, $activations );
 
 	}
 

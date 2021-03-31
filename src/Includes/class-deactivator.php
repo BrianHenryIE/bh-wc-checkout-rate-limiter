@@ -9,7 +9,7 @@
  * @subpackage BH_WC_Checkout_Rate_Limiter/includes
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
 /**
  * Fired during plugin deactivation.
@@ -23,6 +23,8 @@ namespace BH_WC_Checkout_Rate_Limiter\Includes;
  */
 class Deactivator {
 
+	const DEACTIVATED_TIME_OPTION_KEY = 'bh_wc_checkout_rate_limiter_deactivated_time';
+
 	/**
 	 * Short Description. (use period)
 	 *
@@ -31,6 +33,14 @@ class Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate(): void {
+
+		$option_key = self::DEACTIVATED_TIME_OPTION_KEY;
+
+		$deactivations = get_option( $option_key, array() );
+
+		$deactivations[] = time();
+
+		update_option( $option_key, $deactivations );
 
 	}
 

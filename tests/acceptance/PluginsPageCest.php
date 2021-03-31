@@ -1,7 +1,7 @@
-<?php 
+<?php
 
-class PluginsPageCest
-{
+class PluginsPageCest {
+
 
 	/**
 	 * Login and navigate to plugins.php.

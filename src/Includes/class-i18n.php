@@ -5,14 +5,14 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       http://example.com
+ * @link       https://BrianHenryIE.com
  * @since      1.0.0
  *
  * @package    BH_WC_Checkout_Rate_Limiter
  * @subpackage BH_WC_Checkout_Rate_Limiter/includes
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
 /**
  * Define the internationalization functionality.

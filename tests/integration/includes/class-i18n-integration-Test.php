@@ -6,7 +6,7 @@
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
 /**
  * Class BH_WC_Checkout_Rate_Limiter_Test

@@ -4,10 +4,14 @@
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
-use BH_WC_Checkout_Rate_Limiter\Admin\Admin;
-use BH_WC_Checkout_Rate_Limiter\Frontend\Frontend;
+use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
+use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
+use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\NullLogger;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
 use WP_Mock\Matcher\AnyInstance;
 
 /**
@@ -26,7 +30,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers BH_WC_Checkout_Rate_Limiter::set_locale
+	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::set_locale
 	 */
 	public function test_set_locale_hooked() {
 
@@ -35,43 +39,101 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( I18n::class ), 'load_plugin_textdomain' )
 		);
 
-		new BH_WC_Checkout_Rate_Limiter();
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new NullLogger();
+
+		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
 	}
 
 	/**
-	 * @covers BH_WC_Checkout_Rate_Limiter::define_admin_hooks
+	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_woocommerce_ajax_hooks
+	 */
+	public function test_woocommerce_ajax_hooks() {
+
+		\WP_Mock::expectActionAdded(
+			'wc_ajax_checkout',
+			array( new AnyInstance( Ajax::class ), 'rate_limit_checkout' ),
+			0
+		);
+
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new NullLogger();
+
+		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
+	}
+
+	/**
+	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_woocommerce_settings_hooks
+	 */
+	public function test_woocommerce_settings_hooks() {
+
+		\WP_Mock::expectFilterAdded(
+			'woocommerce_get_sections_advanced',
+			array( new AnyInstance( Settings_Advanced::class ), 'add_section' ),
+		);
+
+		\WP_Mock::expectFilterAdded(
+			'woocommerce_get_settings_advanced',
+			array( new AnyInstance( Settings_Advanced::class ), 'settings' ),
+			10,
+			2
+		);
+
+		\WP_Mock::expectActionAdded(
+			'woocommerce_admin_field_attempts_per_interval',
+			array( new AnyInstance( Settings_Advanced::class ), 'print_attempts_per_interval_settings_field' ),
+		);
+
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new NullLogger();
+
+		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
+	}
+
+	/**
+	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_plugins_page_hooks
+	 */
+	public function test_plugins_page_hooks() {
+
+		$plugin_basename = 'bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php';
+
+		\WP_Mock::expectFilterAdded(
+			"plugin_action_links_{$plugin_basename}",
+			array( new AnyInstance( Plugins_Page::class ), 'action_links' )
+		);
+
+		$settings = $this->makeEmpty(
+			Settings_Interface::class,
+			array(
+				'get_plugin_basename' => 'bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php',
+			)
+		);
+		$logger   = new NullLogger();
+
+		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
+	}
+
+
+	/**
+	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_admin_hooks
 	 */
 	public function test_admin_hooks() {
 
 		\WP_Mock::expectActionAdded(
-			'admin_enqueue_scripts',
-			array( new AnyInstance( Admin::class ), 'enqueue_styles' )
+			'admin_init',
+			array( new AnyInstance( Admin::class ), 'add_setup_notice' ),
 		);
 
 		\WP_Mock::expectActionAdded(
-			'admin_enqueue_scripts',
-			array( new AnyInstance( Admin::class ), 'enqueue_scripts' )
+			'plugins_loaded',
+			array( new AnyInstance( Admin::class ), 'init_notices' ),
 		);
 
-		new BH_WC_Checkout_Rate_Limiter();
-	}
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new NullLogger();
 
-	/**
-	 * @covers BH_WC_Checkout_Rate_Limiter::define_frontend_hooks
-	 */
-	public function test_frontend_hooks() {
-
-		\WP_Mock::expectActionAdded(
-			'wp_enqueue_scripts',
-			array( new AnyInstance( Frontend::class ), 'enqueue_styles' )
-		);
-
-		\WP_Mock::expectActionAdded(
-			'wp_enqueue_scripts',
-			array( new AnyInstance( Frontend::class ), 'enqueue_scripts' )
-		);
-
-		new BH_WC_Checkout_Rate_Limiter();
+		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
 	}
 
 }
+

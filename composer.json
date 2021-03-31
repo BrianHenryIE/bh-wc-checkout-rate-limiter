@@ -48,9 +48,9 @@
     "require": {
         "php": ">=7.4",
         "brianhenryie/wp-logger": "dev-master",
-        "cedaro/wprestcop": "^1.0",
+        "nikolaposa/rate-limit": "^2.2",
         "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master",
-        "sunspikes/php-ratelimiter": "^1.2"
+        "wp-oop/transient-cache": "^0.1.0@alpha"
     },
     "require-dev": {
         "10up/wp_mock": "0.4.2",
@@ -79,12 +79,13 @@
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
         "wpackagist-plugin/woocommerce": "^5.1",
-        "wpackagist-theme/twentytwenty": "*"
+        "wpackagist-theme/storefront": "*"
     },
     "extra": {
         "patches": {
             "coenjacobs/mozart": {
                 "Generate classmap": "https://github.com/coenjacobs/mozart/pull/60.patch",
+                "exclude_files": "https://github.com/coenjacobs/mozart/pull/83.patch",
                 "Do NOT parse words in comments as class names": "https://github.com/coenjacobs/mozart/pull/102.patch",
                 "Use positive lookahead to allow phrases": "https://github.com/coenjacobs/mozart/pull/125.patch"
             },
@@ -96,14 +97,11 @@
             }
         },
         "mozart": {
-            "dep_namespace": "BH_WC_Checkout_Rate_Limiter\\",
+            "dep_namespace": "BrianHenryIE\\Checkout_Rate_Limiter\\",
             "dep_directory": "/src/Mozart/PSR-04/",
             "classmap_prefix": "BH_WC_Checkout_Rate_Limiter_",
             "classmap_directory": "/src/Mozart/Classes/",
             "delete_vendor_directories": false,
-            "exclude_packages":  [
-                "desarrolla2/cache"
-            ],
             "override_autoload": {
                 "brianhenryie/wp-logger": {
                     "psr-4": {
@@ -115,7 +113,10 @@
                         "Katzgrau\\KLogger\\": "src/"
                     }
                 }
-            }
+            },
+            "exclude_files_from_copy": [
+                "/nikolaposa\\/rate-limit\\/src\\/(Apcu|Predis|Predis|Redis)RateLimiter\\.php/"
+            ]
         },
         "symlinks": {
             "wp-content": "wordpress/wp-content",
@@ -139,6 +140,7 @@
     "scripts": {
         "post-install-cmd": [
             "\"vendor/bin/mozart\" compose",
+            "rm -rf src/Mozart/Classes",
             "vendor/bin/mozart dump-autoload",
             "vendor/bin/wp core download --path=wordpress --allow-root || true;",
             "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root --extra-php=\"define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );\" || true",
@@ -149,6 +151,7 @@
         ],
         "post-update-cmd": [
             "\"vendor/bin/mozart\" compose",
+            "rm -rf src/Mozart/Classes",
             "vendor/bin/mozart dump-autoload",
             "vendor/bin/wp core download --path=wordpress --allow-root || true;",
             "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root --extra-php=\"define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );\" || true",

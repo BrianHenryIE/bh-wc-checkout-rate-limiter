@@ -5,17 +5,22 @@
  * A class definition that includes attributes and functions used across both the
  * frontend-facing side of the site and the admin area.
  *
- * @link       http://example.com
+ * @link       https://BrianHenryIE.com
  * @since      1.0.0
  *
  * @package    BH_WC_Checkout_Rate_Limiter
  * @subpackage BH_WC_Checkout_Rate_Limiter/includes
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
-use BH_WC_Checkout_Rate_Limiter\Admin\Admin;
-use BH_WC_Checkout_Rate_Limiter\Frontend\Frontend;
+use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
+use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
+use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerAwareTrait;
+use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerInterface;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
 
 /**
  * The core plugin class.
@@ -33,6 +38,15 @@ use BH_WC_Checkout_Rate_Limiter\Frontend\Frontend;
  */
 class BH_WC_Checkout_Rate_Limiter {
 
+	use LoggerAwareTrait;
+
+	/**
+	 * The plugin settings.
+	 *
+	 * @var Settings_Interface
+	 */
+	protected Settings_Interface $settings;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -40,14 +54,21 @@ class BH_WC_Checkout_Rate_Limiter {
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
 	 * the frontend-facing side of the site.
 	 *
+	 * @param Settings_Interface $settings The plugin's settings.
+	 * @param LoggerInterface    $logger PSR logger.
+	 *
 	 * @since    1.0.0
 	 */
-	public function __construct() {
+	public function __construct( Settings_Interface $settings, LoggerInterface $logger ) {
+
+		$this->settings = $settings;
+		$this->setLogger( $logger );
 
 		$this->set_locale();
+		$this->define_woocommerce_ajax_hooks();
+		$this->define_woocommerce_settings_hooks();
 		$this->define_admin_hooks();
-		$this->define_frontend_hooks();
-
+		$this->define_plugins_page_hooks();
 	}
 
 	/**
@@ -57,7 +78,6 @@ class BH_WC_Checkout_Rate_Limiter {
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	protected function set_locale(): void {
 
@@ -68,35 +88,52 @@ class BH_WC_Checkout_Rate_Limiter {
 	}
 
 	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
+	 * Registers the hooks related to WooCommerce ajax actions. i.e. the main hook.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
-	protected function define_admin_hooks(): void {
+	protected function define_woocommerce_ajax_hooks(): void {
 
-		$plugin_admin = new Admin();
+		$ajax = new Ajax( $this->settings, $this->logger );
 
-		add_action( 'admin_enqueue_scripts', array( $plugin_admin, 'enqueue_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( $plugin_admin, 'enqueue_scripts' ) );
+		add_action( 'wc_ajax_checkout', array( $ajax, 'rate_limit_checkout' ), 0 );
 
 	}
 
 	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
+	 * Registers the hooks related to adding the settings page to WooCommerce.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
-	protected function define_frontend_hooks(): void {
+	protected function define_woocommerce_settings_hooks(): void {
 
-		$plugin_frontend = new Frontend();
+		$settings_advanced = new Settings_Advanced( $this->settings, $this->logger );
 
-		add_action( 'wp_enqueue_scripts', array( $plugin_frontend, 'enqueue_styles' ) );
-		add_action( 'wp_enqueue_scripts', array( $plugin_frontend, 'enqueue_scripts' ) );
+		add_filter( 'woocommerce_get_sections_advanced', array( $settings_advanced, 'add_section' ) );
+		add_filter( 'woocommerce_get_settings_advanced', array( $settings_advanced, 'settings' ), 10, 2 );
+
+		add_action( 'woocommerce_admin_field_attempts_per_interval', array( $settings_advanced, 'print_attempts_per_interval_settings_field' ) );
 
 	}
 
+	/**
+	 * Register hooks for displaying and dismissing the "plugin is not yet configured" notice.
+	 */
+	protected function define_admin_hooks(): void {
+
+		$admin = new Admin( $this->settings, $this->logger );
+
+		add_action( 'plugins_loaded', array( $admin, 'init_notices' ) );
+		add_action( 'admin_init', array( $admin, 'add_setup_notice' ) );
+	}
+
+	/**
+	 * Register hook to add a settings link on plugins.php.
+	 */
+	protected function define_plugins_page_hooks(): void {
+
+		$plugins_page = new Plugins_Page( $this->settings, $this->logger );
+
+		add_filter( "plugin_action_links_{$this->settings->get_plugin_basename()}", array( $plugins_page, 'action_links' ) );
+	}
 }

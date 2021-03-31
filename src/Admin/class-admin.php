@@ -1,75 +1,124 @@
 <?php
 /**
- * The admin-specific functionality of the plugin.
+ * Display an admin notice inviting the user to configure the plugin. Stops displaying after a week.
  *
- * @link       http://example.com
+ * @author     BrianHenryIE <BrianHenryIE@gmail.com>
+ * @link       https://BrianHenryIE.com
  * @since      1.0.0
- *
  * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/admin
  */
 
-namespace BH_WC_Checkout_Rate_Limiter\Admin;
+namespace BrianHenryIE\Checkout_Rate_Limiter\Admin;
+
+use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\Includes\Activator;
+use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerAwareTrait;
+use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerInterface;
+use BrianHenryIE\Checkout_Rate_Limiter\WPTRT\AdminNotices\Notices;
 
 /**
- * The admin-specific functionality of the plugin.
+ * Checks that:
+ * * last activated time is in the past week
+ * * current_user_can('manage_options')
+ * * plugin is not configured
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/admin
- * @author     BrianHenryIE <BrianHenryIE@gmail.com>
+ * @see https://github.com/wptrt/admin-notices
  */
 class Admin {
 
+	use LoggerAwareTrait;
+
 	/**
-	 * Register the stylesheets for the admin area.
+	 * The plugin's settings.
 	 *
-	 * @hooked admin_enqueue_scripts
-	 *
-	 * @since    1.0.0
+	 * @var Settings_Interface
 	 */
-	public function enqueue_styles(): void {
+	protected Settings_Interface $settings;
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+	/**
+	 * WPTRT Notices instance.
+	 *
+	 * @see https://github.com/wptrt/admin-notices
+	 *
+	 * @var Notices
+	 */
+	protected Notices $notices;
 
-		wp_enqueue_style( 'bh-wc-checkout-rate-limiter', plugin_dir_url( __FILE__ ) . 'css/bh-wc-checkout-rate-limiter-admin.css', array(), BH_WC_CHECKOUT_RATE_LIMITER_VERSION, 'all' );
+	/**
+	 * Instantiate.
+	 *
+	 * @param Settings_Interface $settings The plugin settings.
+	 * @param LoggerInterface    $logger PSR logger.
+	 */
+	public function __construct( Settings_Interface $settings, LoggerInterface $logger ) {
+		$this->settings = $settings;
+		$this->setLogger( $logger );
+	}
+
+	/**
+	 * Initialize WPTRT\AdminNotices for presenting notices and handling dismissals.
+	 *
+	 * Load only on admin screens and AJAX requests.
+	 *
+	 * @hooked plugins_loaded
+	 */
+	public function init_notices(): void {
+
+		if ( ! is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			return;
+		}
+
+		$this->notices = new Notices();
+		$this->notices->boot();
 
 	}
 
 	/**
-	 * Register the JavaScript for the admin area.
+	 * Checks if we are recently activated and unconfigured, then displays an admin notice to users.
 	 *
-	 * @hooked admin_enqueue_scripts
-	 *
-	 * @since    1.0.0
+	 * @hooked admin_init
 	 */
-	public function enqueue_scripts(): void {
+	public function add_setup_notice(): void {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+		if ( ! is_admin() ) {
+			return;
+		}
 
-		wp_enqueue_script( 'bh-wc-checkout-rate-limiter', plugin_dir_url( __FILE__ ) . 'js/bh-wc-checkout-rate-limiter-admin.js', array( 'jquery' ), BH_WC_CHECKOUT_RATE_LIMITER_VERSION, false );
+		if ( $this->settings->is_enabled() ) {
+			// Already configured.
+			return;
+		}
+
+		// Don't show it on the settings page itself.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['section'] ) && 'checkout-rate-limiting' === $_GET['section'] ) {
+			return;
+		}
+
+		$last_activated_times = get_option( Activator::ACTIVATED_TIME_OPTION_KEY, array() );
+
+		$last_activated = intval( array_pop( $last_activated_times ) );
+
+		// If last activation was longer than a week ago, return.
+		if ( $last_activated < time() - WEEK_IN_SECONDS ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting' );
+
+		$id      = $this->settings->get_plugin_slug() . '-activation-configuration';
+		$title   = '';
+		$message = "{$this->settings->get_plugin_name()} needs to be configured. Please <a href=\"{$settings_url}\">visit the settings page</a> to configure and enable.";
+
+		$options = array(
+			'capability' => 'manage_options',
+		);
+
+		$this->notices->add( $id, $title, $message, $options );
 
 	}
 

@@ -18,7 +18,7 @@
  * For more information, see the following discussion:
  * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
  *
- * @link       http://example.com
+ * @link       https://BrianHenryIE.com
  * @since      1.0.0
  *
  * @package    BH_WC_Checkout_Rate_Limiter
@@ -28,3 +28,14 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+delete_option( 'bh_wc_checkout_rate_limiter_activated_time' );
+delete_option( 'bh_wc_checkout_rate_limiter_deactivated_time' );
+
+delete_option( 'bh_wc_checkout_rate_limiter_checkout_rate_limiting_enabled' );
+
+delete_option( 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_1' );
+delete_option( 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_2' );
+delete_option( 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_3' );
+
+delete_option( 'bh_wc_checkout_rate_limiter_log_level' );
