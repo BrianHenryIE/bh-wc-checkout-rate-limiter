@@ -1,4 +1,4 @@
-[![WordPress tested 5.7](https://img.shields.io/badge/WordPress-v5.7%20tested-0073aa.svg)](https://wordpress.org/plugins/plugin_slug) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wc-checkout-rate-limiter/)
+[![WordPress tested 5.7](https://img.shields.io/badge/WordPress-v5.7%20tested-0073aa.svg)](https://wordpress.org/plugins/bh-wc-checkout-rate-limiter) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPStan ](.github/phpstan.svg)](https://github.com/szepeviktor/phpstan-wordpress)  [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wc-checkout-rate-limiter/)
 
 # Checkout Rate Limiter
 
