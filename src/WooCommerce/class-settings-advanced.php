@@ -195,7 +195,7 @@ class Settings_Advanced {
 					style="width: 80px;"
 					value="<?php echo esc_attr( $option_value['interval'] ); ?>"
 					class="<?php echo esc_attr( $value['class'] ); ?>"
-					step="60"
+					step="1"
 					min="0"
 				/>&nbspseconds.
 			</td>

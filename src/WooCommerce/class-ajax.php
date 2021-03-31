@@ -18,6 +18,7 @@ use BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter\WordPress_RateLimiter;
 use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerAwareTrait;
 use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerInterface;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
+use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\SilentRateLimiter;
 
 /**
  * Hooked on wc_ajax_checkout earlier than WooCommerce's own processing code.
@@ -39,13 +40,22 @@ class Ajax {
 	protected Settings_Interface $settings;
 
 	/**
+	 * DI rate limiter.
+	 *
+	 * @var SilentRateLimiter|null
+	 */
+	protected ?SilentRateLimiter $rate_limiter;
+
+	/**
 	 * Instantiate.
 	 *
-	 * @param Settings_Interface $settings The plugin settings.
-	 * @param LoggerInterface    $logger PSR logger.
+	 * @param Settings_Interface     $settings The plugin settings.
+	 * @param LoggerInterface        $logger PSR logger.
+	 * @param SilentRateLimiter|null $rate_limiter Allow passing in a rate limiter instance for testing.
 	 */
-	public function __construct( Settings_Interface $settings, LoggerInterface $logger ) {
-		$this->settings = $settings;
+	public function __construct( Settings_Interface $settings, LoggerInterface $logger, ?SilentRateLimiter $rate_limiter = null ) {
+		$this->rate_limiter = $rate_limiter;
+		$this->settings     = $settings;
 		$this->setLogger( $logger );
 	}
 
@@ -71,9 +81,9 @@ class Ajax {
 			return;
 		}
 
-		$rate_limiter = new WordPress_RateLimiter( 'checkout' );
-
 		$ip_address = \WC_Geolocation::get_ip_address();
+
+		$rate_limiter = $this->rate_limiter ?? new WordPress_RateLimiter( 'checkout' );
 
 		foreach ( $limits as $interval => $allowed_access_count ) {
 
