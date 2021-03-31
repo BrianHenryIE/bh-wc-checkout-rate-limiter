@@ -73,14 +73,12 @@ class Psr16RateLimiter implements RateLimiter, SilentRateLimiter {
 	 * The key includes the interval so multiple intervals:incidents can be counted against the one identifier.
 	 * e.g. it can happen five times in one minute but no more then ten times in one hour.
 	 *
-	 * @see https://github.com/wp-oop/transient-cache/blob/94b21321867dfb82eda7fe2ab962895c939f446d/src/CachePool.php#L38
-	 *
 	 * @param string $identifier
 	 * @param int    $interval
 	 * @return string
 	 */
-	private function key( string $identifier, int $interval ): string {
-		return "{$this->keyPrefix}{$identifier}--$interval";
+	protected function key( string $identifier, int $interval ): string {
+		return "{$this->keyPrefix}{$identifier}:$interval";
 	}
 
 	/**
