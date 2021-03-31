@@ -21,7 +21,7 @@ class PluginsPageCest {
 	 */
 	public function testPluginsPageForName( AcceptanceTester $I ) {
 
-		$I->canSee( 'BH WC Checkout Rate Limiter' );
+		$I->canSee( 'Checkout Rate Limiter' );
 	}
 
 	/**

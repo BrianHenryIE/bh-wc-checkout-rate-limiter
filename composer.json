@@ -25,14 +25,6 @@
             "type": "git"
         },
         {
-            "url": "https://github.com/BrianHenryIE/composer-phpstorm",
-            "type": "git"
-        },
-        {
-            "type": "path",
-            "url": "../bh-wp-logger"
-        },
-        {
             "url": "https://github.com/BrianHenryIE/bh-wp-dev",
             "type": "git"
         },

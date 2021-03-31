@@ -1,8 +1,10 @@
-[![WordPress tested 5.7](https://img.shields.io/badge/WordPress-v5.7%20tested-0073aa.svg)](https://wordpress.org/plugins/plugin_slug) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/plugin_slug/)
+[![WordPress tested 5.7](https://img.shields.io/badge/WordPress-v5.7%20tested-0073aa.svg)](https://wordpress.org/plugins/plugin_slug) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wc-checkout-rate-limiter/)
 
 # Checkout Rate Limiter
 
-Rate limit AJAX calls to WooCommerce checkout.
+Rate limit "Place Order" on WooCommerce checkout.
+
+Rate limits `/?wc-ajax=checkout` by IP.
 
 ## Install
 
@@ -14,6 +16,7 @@ Then when the "Place Order" button on checkout is pressed to frequently, the cus
 
 ![Checkout page](./assets/screenshot-2.png "Too Many Requests error message on checkout")
 
+Three rates can be set, progressively punishing problematic people.
 
 ## Background
 
@@ -51,42 +54,59 @@ Your website can be attacked by running 100s of fake credit card numbers through
 > 
 > I'm contacting my processor today to see how much trouble I'm in.
 
-## Solution
+## Operation
 
-The solution is to rate limit how often one IP address can send a request to `/?wc-ajax=checkout`
+This solution uses rate limiting per IP address to stop how often one IP can send a request to `/?wc-ajax=checkout`
 
-The code to handle that URL can be found at:
+The WooCommerce code to handle `/?wc-ajax=checkout` can be found at:
 
-* `class-wc-ajax.php:77`
-* `add_action( 'template_redirect', array( __CLASS__, 'do_wc_ajax' ), 0 );`
-* `WC_Ajax::do_wc_ajax()`
-* `do_action( 'wc_ajax_' . $action );`
+* [class-wc-ajax.php:24](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L24) `add_action( 'template_redirect', array( __CLASS__, 'do_wc_ajax' ), 0 );` 
+* In [WC_Ajax::do_wc_ajax()](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L90)  `do_action( 'wc_ajax_' . $action );`, which in our case `$action` is `checkout`
+* The actual `wc_ajax_checkout` is the [WC_AJAX::checkout()](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L461-L468) function, which I think is [added at default priority 10](https://github.com/woocommerce/woocommerce/blob/09b5fb4691555f3c541c58354d09d91a35347504/includes/class-wc-ajax.php#L114-L120), making it easy to slip in before. 
 
 Then, the simplified version of what this plugin does is:
 
 ```php
 add_action( 'wc_ajax_checkout', 'rate_limit_checkout', 0 );
+
 function rate_limit_checkout() {
     $rate_limiter = new WordPress_RateLimiter();
     
-    $ip_address = \WC_Geolocation::get_ip_address();
+    $ip_address = WC_Geolocation::get_ip_address();
     
     try {
-        $rate_limiter->limit($ip_address, Rate::perMinute(5));
+        $rate_limiter->limit( $ip_address, Rate::perMinute( 5 ) );
         
-        //on success
-        return;
     } catch (LimitExceeded $exception) {
-       wp_send_json_error();
+       wp_send_json_error( null, 429 );
     }
 }
 ```
 
+### Detail
+
+Rather than write my own rate limiting code, I used [nikolaposa/rate-limit](https://github.com/nikolaposa/rate-limit/), then added a [PSR-16 wrapper for it](https://github.com/BrianHenryIE/bh-wc-checkout-rate-limiter/blob/v1.0.0/src/API/RateLimiter/Psr16RateLimiter.php) ([PSR-16)](
+https://github.com/php-fig/simple-cache), and used a [PSR-16 implementation of WordPress transients](https://github.com/wp-oop/transient-cache) as the cache. All that code _should_ be external to this plugin. 
+
+The niceties of the plugin are:
+
+* Logs
+* Settings link on plugins.php
+* Settings link as admin notice for one week after activation (if not configured)
+
 ## Notes
 
-https://github.com/php-fig/simple-cache
+The correct way to address this problem for most people is with a captcha. We were not using captcha because when we enabled a captcha, customers could not checkout. Ultimately, this was a problem with [WooCommerce Anti-Fraud](https://woocommerce.com/products/woocommerce-anti-fraud/), a plugin with a litany of issues, and no effort to address them.
 
-`option.php:791` `get_transient()`
+Additionally, if you use Cloudflare, the logical thing would be to use [Cloudflare's rate limiting](https://www.cloudflare.com/rate-limiting/):
+
+![Cloudflare Rate Limiting Rule](./assets/cloudflare.png "Cloudflare Query strings are not allowed message")
+
+Where [Cloudflare's rate limiting](https://www.youtube.com/watch?v=monBTXwtzi8) should be used – I wish there were a tool to take recent Apache access logs and determine a 75% percentile customer access/minute, then rate limit everyone else. (where '75' can be learned).
+
+### Transients / Cache
+
+Although this plugin is using transients, WordPress's implementation of transients ([option.php:791's get_transient()](https://github.com/WordPress/WordPress/blob/058f9903676a7efaee534a682df0a2a8b87574d8/wp-includes/option.php#L791)) defers their storage to any available [object cache](https://developer.wordpress.org/reference/classes/wp_object_cache/#Persistent_Caching). Using the object cache directly presumably affords benefits.
 
 ```php 
 function get_transient( $transient ) {
@@ -95,14 +115,44 @@ function get_transient( $transient ) {
 	    $value = wp_cache_get( $transient, 'transient' );
 ```
 
+### WordFence
 
-Cooling off
+WordFence has [rate limiting](https://www.wordfence.com/help/firewall/rate-limiting/) but it did not offer the option to be specific to `/?wc-ajax=checkout`. When I looked at its general rate limiting, and at Cloudflare's rate limiting, it is very hard to determine the correct numbers. 
 
-Empty cart.
+### Cooling off
 
-WC_Rate_Limiter
+When a limit is reached, an additional punishment seems reasonable. This could be achieved easily with another transient.
+
+### Empty cart
+
+The author of one of the Reddit posts quoted above replied to my query (after I had written most of this!), and the interesting difference of approach was that he emptied the "customer"'s cart every time they exceeded the rate limit. Clever! The only reason I haven't done it here is because the time taken so far. I like it, but I'm not sure I need it. 
+
+### WC_Rate_Limiter
+
+Having already written the cruz of this, while I was searching my project, I found the class [WC_Rate_Limiter](https://github.com/woocommerce/woocommerce/blob/5.1.0/includes/class-wc-rate-limiter.php). It doesn't seem to be an appropriate replacement, but it's always enlightening to see another corner of the WooCommerce code I haven't encountered.  
+
+### WP REST Cop
+
+A rate limiter for the WP REST API: [WP REST Cop](https://github.com/cedaro/wprestcop). I looked at this initially and hoped I could fork it or use it as a library, but as I read more I opted, after some hops, for the other approach. I'm a fan of the author, whose [SatisPress plugin](https://github.com/cedaro/satispress) is essential. 
+
+### Selenium
+
+Jundging by the logs I've seen, the attack I've seen was probably via [Selenium](https://en.wikipedia.org/wiki/Selenium_(software)).
+
+I saw that based on the User-Agent and the cadence of requests. Interesting articles:
+
+* [How does reCAPTCHA 3 know I'm using Selenium/chromedriver?](https://stackoverflow.com/questions/55501524/how-does-recaptcha-3-know-im-using-selenium-chromedriver/55502835#55502835)
+* [Can a website detect when you are using Selenium with chromedriver?](https://stackoverflow.com/questions/33225947/can-a-website-detect-when-you-are-using-selenium-with-chromedriver#41220267)
+* ["Looks like the website is protected by Bot Management service provider Distil Networks and the navigation by
+  ChromeDriver gets detected and subsequently blocked. Distil is like a bot firewall."](https://www.edureka.co/community/79066/avoid-bot-detection-not-working-with-selenium)
+* Latest Chrome on Windows User Agents: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
+https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome"
+
+Captcha beats Selenium.
 
 ## See Also
+
+In an unrelated project 
 
 CSP Condition IP Address
 
@@ -194,3 +244,5 @@ vendor/bin/codecept clean
 See [github.com/BrianHenryIE/WordPress-Plugin-Boilerplate](https://github.com/BrianHenryIE/WordPress-Plugin-Boilerplate) for initial setup rationale. 
 
 # Acknowledgements
+
+https://www.reddit.com/user/bonadzz/
