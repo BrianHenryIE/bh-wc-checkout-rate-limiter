@@ -1,0 +1,56 @@
+name: Integration
+
+# Runs integration tests.
+#
+# vendor/bin/codecept run integration
+#
+# @author BrianHenryIE
+
+on: ["push"]
+
+jobs:
+
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Read .env.testing
+        uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env.testing
+
+#      - name: Create Composer auth.json
+#        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
+
+      # TODO: only one of these two databases is needed
+      - name: Configure MySQL
+        run: |
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE USER '"$TEST_DB_USER"'@'%' IDENTIFIED WITH mysql_native_password BY '"$TEST_DB_PASSWORD"';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_SITE_DB_NAME"; USE "$TEST_SITE_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_SITE_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+
+      - name: Update configs for GA
+        run: |
+          find . -depth \( -name '.env.testing' \) -exec sed -i "s/=\"127.0.0.1\"/=\"127.0.0.1:${{ job.services.mysql.ports['3306'] }}\"/g" {} +
+          find . -depth \( -name 'composer.json' \) -exec sed -i "s/127.0.0.1/127.0.0.1:${{ job.services.mysql.ports['3306'] }}/g" {} +
+          find . -depth \( -name '.env.testing' -o -name '*.cest' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+
+      - name: Run composer install
+        uses: php-actions/composer@v1
+
+      - name: Run integration tests
+        run: vendor/bin/codecept run integration # --report // TODO: GitHub Actions printer.

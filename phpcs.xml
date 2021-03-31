@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Coding Standards for Plugins">
+    <description>Generally-applicable sniffs for WordPress plugins</description>
+
+    <rule ref="WordPress" />
+
+    <!-- Check all PHP files in directory tree by default. -->
+    <arg name="extensions" value="php"/>
+    <file>.</file>
+
+    <!-- Show progress and sniff codes in all reports -->
+    <arg value="ps"/>
+
+    <exclude-pattern>/assets/</exclude-pattern>
+    <exclude-pattern>/scratch/</exclude-pattern>
+    <exclude-pattern>/src/Mozart/*</exclude-pattern>
+    <exclude-pattern>/tests/</exclude-pattern>
+    <exclude-pattern>/tests/_data/</exclude-pattern>
+    <exclude-pattern>/tests/_output/</exclude-pattern>
+    <exclude-pattern>/tests/_support/</exclude-pattern>
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/wordpress/</exclude-pattern>
+    <exclude-pattern>/wp-content/</exclude-pattern>
+
+    <exclude-pattern>/src/API/RateLimiter/Psr16RateLimiter.php</exclude-pattern>
+
+    <rule ref="Squiz.PHP.DisallowMultipleAssignments.Found">
+        <exclude-pattern>bh-wc-checkout-rate-limiter.php</exclude-pattern>
+        <exclude-pattern>class-bh-wc-checkout-rate-limiter.php</exclude-pattern>
+    </rule>
+
+</ruleset>
