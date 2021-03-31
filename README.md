@@ -159,12 +159,12 @@ In an unrelated project I needed to block ranges of IPs which I was able to do w
 Clone this repo, open PhpStorm, then run `composer install` to install the dependencies.
 
 ```
-git clone https://github.com/brianhenryie/plugin_slug.git;
+git clone https://github.com/brianhenryie/bh-wc-checkout-rate-limiter.git;
 open -a PhpStorm ./;
 composer install;
 ```
 
-For integration and acceptance tests, a local webserver must be running with `localhost:8080/plugin_slug/` pointing at the root of the repo. MySQL must also be running locally – with two databases set up with:
+For integration and acceptance tests, a local webserver must be running with `localhost:8080/bh-wc-checkout-rate-limiter/` pointing at the root of the repo. MySQL must also be running locally – with two databases set up with:
 
 ```
 mysql_username="root"
