@@ -12,7 +12,7 @@ Download the latest version from [releases](https://github.com/BrianHenryIE/bh-w
 
 ![Settings page](./assets/screenshot-1.png "Configure the number of attempts per second")
 
-Then when the "Place Order" button on checkout is pressed to frequently, the customer will be blocked:
+Then when the "Place Order" button on checkout is pressed too frequently, the customer will be blocked:
 
 ![Checkout page](./assets/screenshot-2.png "Too Many Requests error message on checkout")
 
