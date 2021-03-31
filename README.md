@@ -77,7 +77,7 @@ function rate_limit_checkout() {
     try {
         $rate_limiter->limit( $ip_address, Rate::perMinute( 5 ) );
         
-    } catch (LimitExceeded $exception) {
+    } catch ( LimitExceeded $exception ) {
        wp_send_json_error( null, 429 );
     }
 }
@@ -92,17 +92,19 @@ The niceties of the plugin are:
 
 * Logs
 * Settings link on plugins.php
-* Settings link as admin notice for one week after activation (if not configured)
+* Settings link as admin notice until configured (or one week)
 
 ## Notes
 
-The correct way to address this problem for most people is with a captcha. We were not using captcha because when we enabled a captcha, customers could not checkout. Ultimately, this was a problem with [WooCommerce Anti-Fraud](https://woocommerce.com/products/woocommerce-anti-fraud/), a plugin with a litany of issues.
+The correct way to address this problem for most people is with a [captcha](https://woocommerce.com/products/recaptcha-for-woocommerce/). We were not using captcha because when we enabled a captcha, customers could not checkout. Ultimately, this was a problem with [WooCommerce Anti-Fraud](https://woocommerce.com/products/woocommerce-anti-fraud/), a plugin with a [litany](https://twitter.com/BrianHenryIE/status/1330300510331613185) of [issues](https://github.com/woocommerce/woocommerce-admin/issues/5631#issuecomment-742113407).
 
-Additionally, if you use Cloudflare, the logical thing would be to use [Cloudflare's rate limiting](https://www.cloudflare.com/rate-limiting/):
+Additionally, if you use Cloudflare, the logical thing seems to be to use [Cloudflare's rate limiting](https://www.cloudflare.com/rate-limiting/), but:
 
 ![Cloudflare Rate Limiting Rule](./assets/cloudflare.png "Cloudflare Query strings are not allowed message")
 
-Where [Cloudflare's rate limiting](https://www.youtube.com/watch?v=monBTXwtzi8) should be used – I wish there were a tool to take recent Apache access logs and determine a 75% percentile customer access/minute, then rate limit everyone else. (where '75' can be learned).
+[Cloudflare's rate limiting](https://www.youtube.com/watch?v=monBTXwtzi8) could still be used on `/checkout/`. In the case I encountered, this would have helped because the bot was reloading `/checkout/` each time, but I think a better designed bot could submit the AJAX checkout repeatedly without reloading the whole page. 
+
+For whole-site rate-limiting, I wish there were a tool to take recent Apache access logs and determine a 75% percentile customer access/minute, then rate limit everyone else. (where '75' can be learned).
 
 ### Transients / Cache
 
@@ -117,7 +119,7 @@ function get_transient( $transient ) {
 
 ### WordFence
 
-WordFence has [rate limiting](https://www.wordfence.com/help/firewall/rate-limiting/) but it did not offer the option to be specific to `/?wc-ajax=checkout`. When I looked at its general rate limiting, and at Cloudflare's rate limiting, it is very hard to determine the correct numbers. 
+WordFence has [rate limiting](https://www.wordfence.com/help/firewall/rate-limiting/) but it did not offer the option to be specific to `/?wc-ajax=checkout`. When I looked at its general rate limiting, and at Cloudflare's rate limiting, it is very hard to determine the correct numbers to use.
 
 ### Cooling off
 
@@ -147,8 +149,6 @@ I saw that based on the User-Agent and the cadence of requests. Interesting arti
   ChromeDriver gets detected and subsequently blocked. Distil is like a bot firewall."](https://www.edureka.co/community/79066/avoid-bot-detection-not-working-with-selenium)
 * [Latest Chrome on Windows User Agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome"): "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
 
-
-Captcha beats Selenium.
 
 ## See Also
 
