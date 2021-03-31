@@ -162,6 +162,14 @@ class Settings_Advanced {
 
 		$option_value = $value['value'];
 
+        if( !isset( $option_value['attempts'] ) ) {
+            $option_value['attempts'] = '';
+        }
+
+        if( !isset( $option_value['interval'] ) ) {
+            $option_value['interval'] = '';
+        }
+
 		// Description handling... copied from WooCommerce WC_Admin_Settings.
 		$field_description = WC_Admin_Settings::get_field_description( $value );
 		$description       = $field_description['description'];
