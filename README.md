@@ -96,7 +96,7 @@ The niceties of the plugin are:
 
 ## Notes
 
-The correct way to address this problem for most people is with a captcha. We were not using captcha because when we enabled a captcha, customers could not checkout. Ultimately, this was a problem with [WooCommerce Anti-Fraud](https://woocommerce.com/products/woocommerce-anti-fraud/), a plugin with a litany of issues, and no effort to address them.
+The correct way to address this problem for most people is with a captcha. We were not using captcha because when we enabled a captcha, customers could not checkout. Ultimately, this was a problem with [WooCommerce Anti-Fraud](https://woocommerce.com/products/woocommerce-anti-fraud/), a plugin with a litany of issues.
 
 Additionally, if you use Cloudflare, the logical thing would be to use [Cloudflare's rate limiting](https://www.cloudflare.com/rate-limiting/):
 
@@ -129,7 +129,7 @@ The author of one of the Reddit posts quoted above replied to my query (after I 
 
 ### WC_Rate_Limiter
 
-Having already written the cruz of this, while I was searching my project, I found the class [WC_Rate_Limiter](https://github.com/woocommerce/woocommerce/blob/5.1.0/includes/class-wc-rate-limiter.php). It doesn't seem to be an appropriate replacement, but it's always enlightening to see another corner of the WooCommerce code I haven't encountered.  
+Having already written the crux of this, while I was searching my project, I found the class [WC_Rate_Limiter](https://github.com/woocommerce/woocommerce/blob/5.1.0/includes/class-wc-rate-limiter.php). It doesn't seem to be an appropriate replacement, but it's always enlightening to see another corner of the WooCommerce code I haven't encountered.  
 
 ### WP REST Cop
 
@@ -137,7 +137,7 @@ A rate limiter for the WP REST API: [WP REST Cop](https://github.com/cedaro/wpre
 
 ### Selenium
 
-Jundging by the logs I've seen, the attack I've seen was probably via [Selenium](https://en.wikipedia.org/wiki/Selenium_(software)).
+Judging from the logs I've seen, the attack I've seen was probably via [Selenium](https://en.wikipedia.org/wiki/Selenium_(software)).
 
 I saw that based on the User-Agent and the cadence of requests. Interesting articles:
 
@@ -145,16 +145,14 @@ I saw that based on the User-Agent and the cadence of requests. Interesting arti
 * [Can a website detect when you are using Selenium with chromedriver?](https://stackoverflow.com/questions/33225947/can-a-website-detect-when-you-are-using-selenium-with-chromedriver#41220267)
 * ["Looks like the website is protected by Bot Management service provider Distil Networks and the navigation by
   ChromeDriver gets detected and subsequently blocked. Distil is like a bot firewall."](https://www.edureka.co/community/79066/avoid-bot-detection-not-working-with-selenium)
-* Latest Chrome on Windows User Agents: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
-https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome"
+* [Latest Chrome on Windows User Agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome"): "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
+
 
 Captcha beats Selenium.
 
 ## See Also
 
-In an unrelated project 
-
-CSP Condition IP Address
+In an unrelated project I needed to block ranges of IPs which I was able to do with [WooCommerce Conditional Shipping and Payments](https://woocommerce.com/products/conditional-shipping-and-payments/) by writing a plugin: [IP Address Condition for WooCommerce Conditional Shipping and Payments](https://github.com/BrianHenryIE/bh-wc-csp-condition-ip-address).
 
 ## Contributing
 
