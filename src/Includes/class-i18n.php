@@ -39,7 +39,7 @@ class I18n {
 		load_plugin_textdomain(
 			'bh-wc-checkout-rate-limiter',
 			false,
-			dirname( plugin_basename( __FILE__ ), 2 ) . '/Languages/'
+			dirname( plugin_basename( __FILE__ ), 2 ) . '/languages/'
 		);
 
 	}
