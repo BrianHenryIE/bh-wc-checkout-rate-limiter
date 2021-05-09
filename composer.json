@@ -1,6 +1,6 @@
 {
-    "name": "your-domain/bh-wc-checkout-rate-limiter",
-    "description": "This is a short description of what plugin_title does.",
+    "name": "brianhenryie/bh-wc-checkout-rate-limiter",
+    "description": "Rate limits the WooCommerce Place Order button by IP.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0+-or-later",
     "authors": [
@@ -17,6 +17,10 @@
     },
     "repositories": [
         {
+            "type": "path",
+            "url": "../bh-wp-logger"
+        },
+        {
             "url": "https://github.com/WordPress/wordpress-develop",
             "type": "git"
         },
@@ -25,7 +29,7 @@
             "type": "git"
         },
         {
-            "url": "https://github.com/BrianHenryIE/bh-wp-dev",
+            "url": "https://github.com/BrianHenryIE/admin-notices",
             "type": "git"
         },
         {
@@ -47,7 +51,6 @@
     "require-dev": {
         "10up/wp_mock": "0.4.2",
         "brianhenryie/composer-phpstorm": "dev-master",
-        "brianhenryie/wp-dev": "dev-master",
         "codeception/module-asserts": "^1.0",
         "codeception/module-cli": "^1.0",
         "codeception/module-db": "^1.0.0",
@@ -136,9 +139,6 @@
             "vendor/bin/codecept run wpunit --coverage wpunit.cov",
             "vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
             "open tests/_output/html/index.html"
-        ],
-        "create-plugin-archive": [
-            "BrianHenryIE\\WP_Dev\\CreatePluginArchive::createZip"
         ]
     }
 }
