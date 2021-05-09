@@ -41,7 +41,7 @@ cache
 /vendor/
 
 wordpress
-src/Mozart/
+src/strauss/
 
 wp-content/
 

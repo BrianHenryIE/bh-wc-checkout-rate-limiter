@@ -3,11 +3,11 @@ parameters:
     paths:
         - src
     excludePaths:
-        - src/Mozart/*
+        - src/strauss/*
     bootstrapFiles:
         - src/autoload.php
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
     scanDirectories:
-        - src/Mozart
+        - src/strauss
         - wp-content/plugins
         - vendor/wp-cli

@@ -23,7 +23,7 @@ coverage:
     include:
         - src/*
     exclude:
-        - src/Mozart/*
+        - src/strauss/*
         - /*/index.php
         - /*/*.txt
         - src/autoload.php

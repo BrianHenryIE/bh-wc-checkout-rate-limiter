@@ -13,7 +13,7 @@
 
     <exclude-pattern>/assets/</exclude-pattern>
     <exclude-pattern>/scratch/</exclude-pattern>
-    <exclude-pattern>/src/Mozart/*</exclude-pattern>
+    <exclude-pattern>/src/strauss/*</exclude-pattern>
     <exclude-pattern>/tests/</exclude-pattern>
     <exclude-pattern>/tests/_data/</exclude-pattern>
     <exclude-pattern>/tests/_output/</exclude-pattern>
