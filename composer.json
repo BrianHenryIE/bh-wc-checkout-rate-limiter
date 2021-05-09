@@ -62,6 +62,7 @@
         "kporras07/composer-symlinks": "dev-master",
         "lucatume/wp-browser": "*",
         "phpcompatibility/phpcompatibility-wp": "*",
+        "php-stubs/woocommerce-stubs": "^5.2",
         "phpstan/extension-installer": "^1.1",
         "phpunit/phpcov": "*",
         "squizlabs/php_codesniffer": "*",

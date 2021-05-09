@@ -7,6 +7,8 @@ parameters:
     bootstrapFiles:
         - src/autoload.php
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+        - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+        - vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
     scanDirectories:
         - src/strauss
         - wp-content/plugins
