@@ -15,8 +15,8 @@ namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
 use BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter\WordPress_RateLimiter;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerAwareTrait;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\SilentRateLimiter;
 

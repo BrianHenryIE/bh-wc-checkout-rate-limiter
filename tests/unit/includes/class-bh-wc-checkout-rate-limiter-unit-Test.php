@@ -10,7 +10,7 @@ use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\NullLogger;
+use Psr\Log\NullLogger;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
 use WP_Mock\Matcher\AnyInstance;
 

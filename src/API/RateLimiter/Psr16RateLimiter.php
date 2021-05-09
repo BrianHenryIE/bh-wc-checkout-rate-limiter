@@ -17,8 +17,8 @@ declare(strict_types=1);
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter;
 
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\SimpleCache\CacheInterface;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\SimpleCache\InvalidArgumentException;
+use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Exception\LimitExceeded;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\RateLimiter;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\SilentRateLimiter;

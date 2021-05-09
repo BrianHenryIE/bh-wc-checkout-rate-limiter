@@ -10,7 +10,7 @@ namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\NullLogger;
+use Psr\Log\NullLogger;
 
 /**
  * Class Plugin_WP_Mock_Test

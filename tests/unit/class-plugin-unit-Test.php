@@ -9,7 +9,7 @@
 namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LogLevel;
+use Psr\Log\LogLevel;
 
 /**
  * Class Plugin_WP_Mock_Test

@@ -18,8 +18,8 @@ use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerAwareTrait;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter;
 
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\CacheInterface;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Status;
 

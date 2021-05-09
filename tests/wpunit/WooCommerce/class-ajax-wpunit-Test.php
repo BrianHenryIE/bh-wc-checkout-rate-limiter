@@ -4,7 +4,7 @@
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\NullLogger;
+use Psr\Log\NullLogger;
 use \Exception;
 
 class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {

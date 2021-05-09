@@ -13,9 +13,9 @@
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerAwareTrait;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LoggerInterface;
-use BrianHenryIE\Checkout_Rate_Limiter\Psr\Log\LogLevel;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use WC_Admin_Settings;
 
 /**
