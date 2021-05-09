@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.3
+
+* Minor dev changes
+
 ### 1.0.2
 
 * Fixed PHP warning when loading settings page first time due to empty values.
