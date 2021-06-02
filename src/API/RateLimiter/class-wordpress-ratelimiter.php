@@ -15,6 +15,7 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter;
 
+use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Psr16RateLimiter;
 use BrianHenryIE\Checkout_Rate_Limiter\WpOop\TransientCache\CachePool;
 use BrianHenryIE\Checkout_Rate_Limiter\WpOop\TransientCache\CachePoolFactory;
 
@@ -50,8 +51,8 @@ class WordPress_RateLimiter extends Psr16RateLimiter {
 	 *
 	 * @see https://github.com/wp-oop/transient-cache/blob/94b21321867dfb82eda7fe2ab962895c939f446d/src/CachePool.php#L38
 	 *
-     * @since 1.0.1
-     *
+	 * @since 1.0.1
+	 *
 	 * @param string $identifier The identifier: who/what is the thing being rate limited.
 	 * @param int    $interval The number of seconds in the rate.
 	 * @return string
@@ -64,8 +65,8 @@ class WordPress_RateLimiter extends Psr16RateLimiter {
 	/**
 	 * Replaces all reserved characters with hyphens.
 	 *
-     * @since 1.0.1
-     *
+	 * @since 1.0.1
+	 *
 	 * @param string $key Key to escape.
 	 * @return string
 	 * @throws \Exception Escaping function preg_replace can return null.

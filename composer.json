@@ -84,14 +84,19 @@
             },
             "10up/wp_mock": {
                 "Add AnyObject matcher": "https://github.com/BrianHenryIE/wp_mock/pull/1.patch"
+            },
+            "nikolaposa/rate-limit": {
+                "Add PSR-16 rate limiter": "https://github.com/nikolaposa/rate-limit/pull/49.patch"
             }
         },
         "strauss": {
             "target_directory": "/src/strauss/",
             "dep_namespace": "BrianHenryIE\\Checkout_Rate_Limiter\\",
-            "exclude_files_from_copy": [
-                "/nikolaposa\\/rate-limit\\/src\\/(Apcu|Predis|Predis|Redis)RateLimiter\\.php/"
-            ]
+            "exclude_from_copy": {
+                "file_patterns": [
+                    "~nikolaposa/rate-limit/src/(Apcu|Predis|InMemory|Memcached|Redis)RateLimiter\\.php~"
+                ]
+            }
         },
         "symlinks": {
             "wp-content": "wordpress/wp-content",
