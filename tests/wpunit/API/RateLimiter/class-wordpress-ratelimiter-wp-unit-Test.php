@@ -2,6 +2,7 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter;
 
+use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Psr16RateLimiter;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Status;
 
@@ -10,7 +11,7 @@ class WordPress_RateLimiter_WP_Unit_Test extends \Codeception\TestCase\WPTestCas
 	/**
 	 * Instantiating was failing. Turned out to be a missing "/" in the autoload-classmap.
 	 *
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter\WordPress_RateLimiter::__construct
+	 * @covers \BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter\WordPress_RateLimiter::__construct
 	 */
 	public function test_constructor() {
 
