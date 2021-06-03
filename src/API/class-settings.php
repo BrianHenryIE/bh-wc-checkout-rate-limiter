@@ -10,8 +10,8 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\API;
 
-use BrianHenryIE\Checkout_Rate_Limiter\BrianHenryIE\WP_Logger\API\Logger_Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\BrianHenryIE\WP_Logger\Logger;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\API\Logger_Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
 use Psr\Log\LogLevel;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
 

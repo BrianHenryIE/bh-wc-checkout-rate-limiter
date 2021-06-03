@@ -51,6 +51,7 @@
     "require-dev": {
         "10up/wp_mock": "0.4.2",
         "brianhenryie/composer-phpstorm": "dev-master",
+        "brianhenryie/strauss": "*",
         "codeception/module-asserts": "^1.0",
         "codeception/module-cli": "^1.0",
         "codeception/module-db": "^1.0.0",
@@ -58,7 +59,6 @@
         "codeception/module-phpbrowser": "^1.0.0",
         "codeception/module-webdriver": "^1.0",
         "codeception/util-universalframework": "^1.0",
-        "brianhenryie/strauss": "*",
         "cweagans/composer-patches": "*",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "jaschilz/php-coverage-badger": "^2.0",
@@ -96,6 +96,9 @@
                 "file_patterns": [
                     "~nikolaposa/rate-limit/src/(Apcu|Predis|InMemory|Memcached|Redis)RateLimiter\\.php~"
                 ]
+            },
+            "namespace_replacement_patterns":  {
+                "/BrianHenryIE\\\\(.*)/": "BrianHenryIE\\Checkout_Rate_Limiter\\\\$1"
             }
         },
         "symlinks": {
