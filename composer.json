@@ -50,6 +50,7 @@
     },
     "require-dev": {
         "10up/wp_mock": "0.4.2",
+        "brianhenryie/color-logger": "^1.0",
         "brianhenryie/composer-phpstorm": "dev-master",
         "brianhenryie/strauss": "*",
         "codeception/module-asserts": "^1.0",

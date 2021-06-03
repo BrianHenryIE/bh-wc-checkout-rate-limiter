@@ -3,6 +3,7 @@
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\ColorLogger\ColorLogger;
 use Psr\Log\NullLogger;
 
 /**
@@ -21,7 +22,7 @@ class Settings_Advanced_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	public function test_first_run_empty_variables() {
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		$sut = new Settings_Payments( $settings, $logger );
 

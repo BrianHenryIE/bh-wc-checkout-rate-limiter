@@ -10,6 +10,7 @@ use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\ColorLogger\ColorLogger;
 use Psr\Log\NullLogger;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
 use WP_Mock\Matcher\AnyInstance;
@@ -40,7 +41,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
 	}
@@ -57,7 +58,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
 	}
@@ -85,7 +86,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
 	}
@@ -108,7 +109,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 				'get_plugin_basename' => 'bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php',
 			)
 		);
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
 	}
@@ -130,7 +131,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
 	}

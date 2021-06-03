@@ -10,6 +10,7 @@ namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\ColorLogger\ColorLogger;
 use Psr\Log\NullLogger;
 
 /**
@@ -35,7 +36,7 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 			Settings_Interface::class,
 			array()
 		);
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		$sut = new Plugins_Page( $settings, $logger );
 

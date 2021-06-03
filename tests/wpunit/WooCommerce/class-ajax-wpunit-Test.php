@@ -4,6 +4,7 @@
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\ColorLogger\ColorLogger;
 use Psr\Log\NullLogger;
 use \Exception;
 
@@ -16,7 +17,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_instantiate() {
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		$sut = new Ajax( $settings, $logger );
 
@@ -35,7 +36,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				'is_enabled' => false,
 			)
 		);
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		$sut = new Ajax( $settings, $logger );
 
@@ -55,7 +56,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				'get_checkout_rate_limits' => array(),
 			)
 		);
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		$sut = new Ajax( $settings, $logger );
 
@@ -78,7 +79,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				),
 			)
 		);
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		$sut = new Ajax( $settings, $logger );
 
@@ -115,7 +116,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				),
 			)
 		);
-		$logger   = new NullLogger();
+		$logger   = new ColorLogger();
 
 		$sut = new Ajax( $settings, $logger );
 
