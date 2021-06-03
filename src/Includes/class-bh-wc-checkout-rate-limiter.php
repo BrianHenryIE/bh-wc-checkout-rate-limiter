@@ -20,7 +20,7 @@ use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
 
 /**
  * The core plugin class.
@@ -107,10 +107,10 @@ class BH_WC_Checkout_Rate_Limiter {
 	 */
 	protected function define_woocommerce_settings_hooks(): void {
 
-		$settings_advanced = new Settings_Advanced( $this->settings, $this->logger );
+		$settings_advanced = new Settings_Payments( $this->settings, $this->logger );
 
-		add_filter( 'woocommerce_get_sections_advanced', array( $settings_advanced, 'add_section' ) );
-		add_filter( 'woocommerce_get_settings_advanced', array( $settings_advanced, 'settings' ), 10, 2 );
+		add_filter( 'woocommerce_get_sections_checkout', array( $settings_advanced, 'add_section' ) );
+		add_filter( 'woocommerce_get_settings_checkout', array( $settings_advanced, 'settings' ), 10, 2 );
 
 		add_action( 'woocommerce_admin_field_attempts_per_interval', array( $settings_advanced, 'print_attempts_per_interval_settings_field' ) );
 

@@ -13,12 +13,12 @@ namespace BrianHenryIE\Checkout_Rate_Limiter\API;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\API\Logger_Settings_Interface;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
 use Psr\Log\LogLevel;
-use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
 
 /**
  * The UI for the settings is in the Settings_Advanced class.
  *
- * @see Settings_Advanced
+ * @see Settings_Payments
  *
  * Class Settings
  * @package BrianHenryIE\Checkout_Rate_Limiter\API

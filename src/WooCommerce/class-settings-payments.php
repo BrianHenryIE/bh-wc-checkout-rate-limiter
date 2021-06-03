@@ -19,15 +19,15 @@ use Psr\Log\LogLevel;
 use WC_Admin_Settings;
 
 /**
- * * Adds the settings section to WooCommerce.
+ * * Adds the settings section to WooCommerce, under Payments.
  * * Provides the list of settings.
  * * Contains a custom setting type for printing two integer input boxes alongside each other.
  *
- * Class Settings_Advanced
+ * Class Settings_Payments
  *
  * @package BrianHenryIE\Checkout_Rate_Limiter\WooCommerce
  */
-class Settings_Advanced {
+class Settings_Payments {
 
 	use LoggerAwareTrait;
 
@@ -162,13 +162,13 @@ class Settings_Advanced {
 
 		$option_value = $value['value'];
 
-        if( !isset( $option_value['attempts'] ) ) {
-            $option_value['attempts'] = '';
-        }
+		if ( ! isset( $option_value['attempts'] ) ) {
+			$option_value['attempts'] = '';
+		}
 
-        if( !isset( $option_value['interval'] ) ) {
-            $option_value['interval'] = '';
-        }
+		if ( ! isset( $option_value['interval'] ) ) {
+			$option_value['interval'] = '';
+		}
 
 		// Description handling... copied from WooCommerce WC_Admin_Settings.
 		$field_description = WC_Admin_Settings::get_field_description( $value );

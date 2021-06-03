@@ -2,7 +2,7 @@
 /**
  * Interface for OO instance of settings saved in WooCommerce.
  *
- * @see \BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced
+ * @see \BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments
  *
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  * @link       https://BrianHenryIE.com

@@ -11,7 +11,7 @@ use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
 use Psr\Log\NullLogger;
-use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Advanced;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
 use WP_Mock\Matcher\AnyInstance;
 
 /**
@@ -63,25 +63,25 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_woocommerce_settings_hooks
+	 * @covers \BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_woocommerce_settings_hooks
 	 */
 	public function test_woocommerce_settings_hooks() {
 
 		\WP_Mock::expectFilterAdded(
-			'woocommerce_get_sections_advanced',
-			array( new AnyInstance( Settings_Advanced::class ), 'add_section' ),
+			'woocommerce_get_sections_checkout',
+			array( new AnyInstance( Settings_Payments::class ), 'add_section' ),
 		);
 
 		\WP_Mock::expectFilterAdded(
-			'woocommerce_get_settings_advanced',
-			array( new AnyInstance( Settings_Advanced::class ), 'settings' ),
+			'woocommerce_get_settings_checkout',
+			array( new AnyInstance( Settings_Payments::class ), 'settings' ),
 			10,
 			2
 		);
 
 		\WP_Mock::expectActionAdded(
 			'woocommerce_admin_field_attempts_per_interval',
-			array( new AnyInstance( Settings_Advanced::class ), 'print_attempts_per_interval_settings_field' ),
+			array( new AnyInstance( Settings_Payments::class ), 'print_attempts_per_interval_settings_field' ),
 		);
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
@@ -91,7 +91,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_plugins_page_hooks
+	 * @covers \BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_plugins_page_hooks
 	 */
 	public function test_plugins_page_hooks() {
 
