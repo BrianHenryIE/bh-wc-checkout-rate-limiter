@@ -95,7 +95,7 @@ class Ajax {
 
 			if ( $status->limitExceeded() ) {
 
-			    // TODO: Log the $_REQUEST data (but remove credit card details).
+				// TODO: Log the $_REQUEST data (but remove credit card details).
 
 				$this->logger->notice(
 					"{$ip_address} blocked with {$status->getRemainingAttempts()} remaining attempts for rate limit {$allowed_access_count} per {$interval} seconds.",

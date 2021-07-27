@@ -20,7 +20,7 @@ class SettingsPageCest {
 	 */
 	public function testPluginsPageForName( AcceptanceTester $I ) {
 
-        $I->amOnAdminPage('admin.php?page=wc-settings&tab=checkout');
+		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout' );
 
 		$I->canSee( 'Rate Limiting' );
 	}

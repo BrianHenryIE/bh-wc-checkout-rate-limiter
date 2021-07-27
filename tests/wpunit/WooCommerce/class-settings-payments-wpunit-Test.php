@@ -12,7 +12,7 @@ use Psr\Log\NullLogger;
  * Class Ajax_WPUnit_Test
  * @package BrianHenryIE\Checkout_Rate_Limiter\WooCommerce
  */
-class Settings_Advanced_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Settings_Payments_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * When the settings page is first loaded, the values for the rates are not yet set, causing a PHP warning:
