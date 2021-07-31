@@ -1,5 +1,12 @@
 # Changelog
 
+### 1.1.0
+
+* Move Settings screen to Payments tab
+* Move PSR16RateLimiter to nikolaposa/rate-limit library
+* Log error when cache fails to write (bypasses rate limiter when there is a cache error - NB)
+* Use WC_Logger 
+
 ### 1.0.3
 
 * Minor dev changes
