@@ -87,7 +87,7 @@ jobs:
           cd ../../..
 
       - name: Merge code coverage
-        run: vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output --text;
+        run: vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;
 
       - name: Edit phpcov html output to work with gh-pages
         run: |
