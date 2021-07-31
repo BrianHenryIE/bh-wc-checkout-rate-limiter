@@ -2,10 +2,8 @@ name: Codecoverage
 
 # Runs codeception unit and wpunit tests, merges the code coverage, commits the html report to
 # GitHub Pages, generates a README badge with the coverage percentage.
-#
+
 # Requires a gh-pages branch already created.
-#
-# @author BrianHenryIE
 
 on:
   push:
@@ -14,7 +12,7 @@ on:
 
 jobs:
 
-  ci:
+  codecoverage:
     runs-on: ubuntu-latest
 
     services:
@@ -27,35 +25,49 @@ jobs:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
-    steps:
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
+    strategy:
+      matrix:
+        php: [ '7.4' ]
 
-      - name: Git checkout
+    steps:
+      - name: Checkout
         uses: actions/checkout@v2
 
-      # Fails here when pages branch does not exist.
-
-      - uses: actions/checkout@v2
+      - name: Checkout GitHub Pages branch for code coverage report
+        uses: actions/checkout@v2
         with:
           ref: gh-pages
           path: tests/_output/html
 
-#      - name: Make envfile from Secrets
-#        uses: SpicyPizza/create-envfile@v1
-#        with:
-#          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#          file_name: .env.secret
+      - name: Install PHP
+        uses: shivammathur/setup-php@2.11.0
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          tools: composer
+          extensions: zip
 
-#      - name: Create Composer auth.json from Secrets
-#        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
+      - name: Update configs for GA
+        run: |
+          find . -depth \( -name '.env.testing' \) -exec sed -i "s/=\"127.0.0.1\"/=\"127.0.0.1:${{ job.services.mysql.ports['3306'] }}\"/g" {} +
+          find . -depth \( -name 'composer.json' \) -exec sed -i "s/127.0.0.1/127.0.0.1:${{ job.services.mysql.ports['3306'] }}/g" {} +
+          find . -depth \( -name '.env.testing' -o -name '*.cest' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+          find . -depth \( -name 'dump.sql' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+        env:
+          PLUGIN_SLUG: bh-wc-checkout-rate-limiter
 
       - name: Read .env.testing
         uses: c-py/action-dotenv-to-setenv@v2
         with:
           env-file: .env.testing
+
+      #      - name: Read .env.github
+      #        uses: c-py/action-dotenv-to-setenv@v2
+      #        with:
+      #          env-file: .env.github
+      #
+      #      - name: Set env database host w/port
+      #        run: echo "TEST_SITE_DB_HOST=127.0.0.1:${{ job.services.mysql.ports['3306'] }}" >> $GITHUB_ENV
 
       - name: Configure MySQL
         run: |
@@ -63,22 +75,26 @@ jobs:
           mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_SITE_DB_NAME"; USE "$TEST_SITE_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_SITE_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
           mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
 
-      - name: Update configs for GA
-        run: |
-          find . -depth \( -name '.env.testing' \) -exec sed -i "s/=\"127.0.0.1\"/=\"127.0.0.1:${{ job.services.mysql.ports['3306'] }}\"/g" {} +
-          find . -depth \( -name 'composer.json' \) -exec sed -i "s/127.0.0.1/127.0.0.1:${{ job.services.mysql.ports['3306'] }}/g" {} +
-          find . -depth \( -name '.env.testing' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+#      - name: Create Composer auth.json
+#        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
 
       - name: Run composer install
         uses: php-actions/composer@v6
         with:
-          args: --profile --ignore-platform-reqs
+          args: --ignore-platform-reqs
 
-      - name: Run unit tests
-        run: vendor/bin/codecept run unit --coverage unit.cov || true;
+      - name: Create wpconfig ... the composer.json creation didn't work
+        run: |
+          export $(grep -v '^#' .env.testing | xargs);
+          sudo vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root --extra-php="define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );"
 
-      - name: Run wpunit tests
-        run: vendor/bin/codecept run wpunit --coverage wpunit.cov || true;
+      - name: Allow writing to wp-content
+        run: sudo chmod -R a+w wp-content
+
+      #      - name: Update site URL to match GA
+      #        run: |
+      #          vendor/bin/wp option update home 'http://localhost:8080'
+      #          vendor/bin/wp option update siteurl 'http://localhost:8080'
 
       - name: Clear previous code coverage
         run: |
@@ -86,29 +102,35 @@ jobs:
           rm -rf *
           cd ../../..
 
+      - name: Run unit tests
+        run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage unit.cov || true;
+
+      - name: Run wpunit tests
+        run: XDEBUG_MODE=coverage vendor/bin/codecept run wpunit --coverage wpunit.cov || true;
+
       - name: Merge code coverage
         run: vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;
 
       - name: Edit phpcov html output to work with gh-pages
         run: |
           cd tests/_output/html
-          mv .css css; find . -depth -name '*.html' -exec sed -i "s/.css\//css\//" {} +
-          mv .icons icons; find . -depth -name '*.html' -exec sed -i "s/.icons\//icons\//" {} +
-          mv .js js; find . -depth -name '*.html' -exec sed -i "s/.js\//js\//" {} +
+          mv _css css; find . -depth -name '*.html' -exec sed -i "s/_css\//css\//" {} +
+          mv _icons icons; find . -depth -name '*.html' -exec sed -i "s/_icons\//icons\//" {} +
+          mv _js js; find . -depth -name '*.html' -exec sed -i "s/_js\//js\//" {} +
           git add *
           cd ../../..
 
-      - name: Discard MySQL port changes in .env before commiting other changes
+      - name: Discard environment changes before commiting other changes
         run: |
           git checkout -- .env.testing
+          git checkout -- tests/_data/dump.sql
 
       - name: Commit code coverage to gh-pages
         uses: stefanzweifel/git-auto-commit-action@v4.1.1
         with:
           repository: tests/_output/html
           branch: gh-pages
-          commit_message: "Commit code coverage to gh-pages"
-          commit_options:
+          commit_message: "🤖 Commit code coverage to gh-pages"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -118,5 +140,5 @@ jobs:
       - name: Commit code coverage badge
         uses: stefanzweifel/git-auto-commit-action@v4.1.1
         with:
+          commit_message: "🤖 Commit code coverage badge"
           file_pattern: .github/coverage.svg
-          commit_message: "Commit code coverage badge"
