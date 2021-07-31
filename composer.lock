@@ -79,7 +79,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BrianHenryIE/bh-wp-logger",
-                "reference": "737db748fb685e7c97b738617bce6952ed417f8e"
+                "reference": "08299abce30adc8eb7f65b76096e5ee38c8902fe"
             },
             "require": {
                 "ext-json": "*",
@@ -192,7 +192,7 @@
                 }
             ],
             "description": "This is a short description of what plugin_title does.",
-            "time": "2021-07-31T05:05:54+00:00"
+            "time": "2021-07-31T07:00:42+00:00"
         },
         {
             "name": "katzgrau/klogger",

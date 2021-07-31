@@ -2,7 +2,9 @@
 <ruleset name="WordPress Coding Standards for Plugins">
     <description>Generally-applicable sniffs for WordPress plugins</description>
 
-    <rule ref="WordPress" />
+    <rule ref="WooCommerce-Core">
+        <exclude name="WooCommerce.Commenting.CommentTags.AuthorTag" />
+    </rule>
 
     <!-- Check all PHP files in directory tree by default. -->
     <arg name="extensions" value="php"/>
@@ -13,8 +15,7 @@
 
     <exclude-pattern>/assets/</exclude-pattern>
     <exclude-pattern>/scratch/</exclude-pattern>
-    <exclude-pattern>/src/strauss/*</exclude-pattern>
-    <exclude-pattern>/tests/</exclude-pattern>
+    <exclude-pattern>src/strauss/</exclude-pattern>
     <exclude-pattern>/tests/_data/</exclude-pattern>
     <exclude-pattern>/tests/_output/</exclude-pattern>
     <exclude-pattern>/tests/_support/</exclude-pattern>
@@ -22,9 +23,15 @@
     <exclude-pattern>/wordpress/</exclude-pattern>
     <exclude-pattern>/wp-content/</exclude-pattern>
 
-    <rule ref="Squiz.PHP.DisallowMultipleAssignments.Found">
-        <exclude-pattern>bh-wc-checkout-rate-limiter.php</exclude-pattern>
-        <exclude-pattern>class-bh-wc-checkout-rate-limiter.php</exclude-pattern>
+    <rule ref="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed">
+        <exclude-pattern>src/strauss/</exclude-pattern>
     </rule>
+    <rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+        <exclude-pattern>tests/</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase">
+        <exclude-pattern>tests/</exclude-pattern>
+    </rule>
+
 
 </ruleset>
