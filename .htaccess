@@ -11,9 +11,9 @@ RewriteRule (.*) %{REQUEST_URI}?%1%2 [R=301,L,NE]
 
 # Enable WP_DEBUG.
 php_flag log_errors On
-php_value error_log "wp-content/php_errors.log"
+php_value error_log "wp-content/debug.log"
 
-# Trick WordPress into thinking we're serving REST API over HTTPS.
+## Trick WordPress into thinking we're serving REST API over HTTPS.
 SetEnvIf Request_URI api HTTPS=on
 SetEnvIfExpr "%{QUERY_STRING} =~ /api/" HTTPS=on
 
