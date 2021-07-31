@@ -108,7 +108,7 @@ class Admin {
 			return;
 		}
 
-		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting' );
+		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=checkout-rate-limiting' );
 
 		$id      = $this->settings->get_plugin_slug() . '-activation-configuration';
 		$title   = '';
