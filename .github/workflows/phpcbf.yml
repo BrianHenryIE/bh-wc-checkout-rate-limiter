@@ -29,7 +29,9 @@ jobs:
 #        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
 
       - name: Run Composer install
-        uses: php-actions/composer@v1
+        uses: php-actions/composer@v6
+        with:
+          args: --profile --ignore-platform-reqs
 
       - name: Run PHPCBF to fix what it can
         continue-on-error: true

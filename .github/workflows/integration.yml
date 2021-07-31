@@ -55,7 +55,9 @@ jobs:
           find . -depth \( -name '.env.testing' -o -name '*.cest' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
 
       - name: Run composer install
-        uses: php-actions/composer@v1
+        uses: php-actions/composer@v6
+        with:
+          args: --profile --ignore-platform-reqs
 
       - name: Run integration tests
         run: vendor/bin/codecept run integration # --report // TODO: GitHub Actions printer.

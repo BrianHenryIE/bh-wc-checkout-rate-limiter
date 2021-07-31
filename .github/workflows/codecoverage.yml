@@ -70,7 +70,9 @@ jobs:
           find . -depth \( -name '.env.testing' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
 
       - name: Run composer install
-        uses: php-actions/composer@v1
+        uses: php-actions/composer@v6
+        with:
+          args: --profile --ignore-platform-reqs
 
       - name: Run unit tests
         run: vendor/bin/codecept run unit --coverage unit.cov || true;

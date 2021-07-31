@@ -61,7 +61,9 @@ jobs:
 
 
       - name: Run composer install
-        uses: php-actions/composer@v1
+        uses: php-actions/composer@v6
+        with:
+          args: --profile --ignore-platform-reqs
 
       - name: Create wpconfig ... the composer.json creation didn't work
         run: |
