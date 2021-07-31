@@ -1,0 +1,102 @@
+name: Build and attach releases
+
+# for now, release name must match exactly the plugin base file's version.
+
+on:
+  release:
+    types: [published]
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    strategy:
+      matrix:
+        php: [ '7.4' ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@2.11.0
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer, cs2pr
+          extensions: zip
+
+      - name: Read .env.testing
+        uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env.testing
+
+      - name: Read .env.github
+        uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env.github
+
+      - name: Set env database host w/port
+        run: echo "TEST_SITE_DB_HOST=127.0.0.1:${{ job.services.mysql.ports['3306'] }}" >> $GITHUB_ENV
+
+      - name: Configure MySQL
+        run: |
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE USER '"$TEST_DB_USER"'@'%' IDENTIFIED WITH mysql_native_password BY '"$TEST_DB_PASSWORD"';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_SITE_DB_NAME"; USE "$TEST_SITE_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_SITE_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
+
+      - name: Create Composer auth.json
+        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
+
+      #      - name: Run composer install
+      #        uses: php-actions/composer@v6
+      #        with:
+      #          args: --ignore-platform-reqs
+
+      # This appends code for yahnis-elsts/plugin-update-checker at the end of the main plugin file.
+      - name: Add updater
+        env:
+          code: |
+            \n\n$updateChecker = \BH_WC_Checkout_Rate_Limiter_Puc_v4_Factory::buildUpdateChecker(
+            	'https://github.com/brianhenryie/bh-wc-checkout-rate-limiter/',
+            	__FILE__,
+            	'bh-wc-checkout-rate-limiter'
+            );
+            $updateChecker->setBranch( 'master' );
+            $updateChecker->getVcsApi()->enableReleaseAssets();
+        run: |
+          composer require yahnis-elsts/plugin-update-checker erusev/parsedown;
+          printf "$code" >> src/bh-wc-checkout-rate-limiter.php;
+
+      - name: Create wpconfig ... the composer.json creation didn't work
+        run: |
+          export $(grep -v '^#' .env.testing | xargs);
+          sudo vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root --extra-php="define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );"
+
+      - name: Create plugin archive
+        run: |
+          vendor/bin/wp dist-archive src --plugin-dirname=bh-wc-checkout-rate-limiter
+
+      # https://stackoverflow.com/questions/61256824/how-to-pass-the-output-of-a-bash-command-to-github-action-parameter
+      # echo "DIST_ARCHIVE_OUTPUT=$(vendor/bin/wp dist-archive src --plugin-dirname=bh-wc-checkout-rate-limiter) >> $GITHUB_ENV
+      # echo "${{ env.DIST_ARCHIVE_OUTPUT }}"
+      # Success: Created bh-wc-checkout-rate-limiter.0.1.1.zip
+
+      - uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: "bh-wc-checkout-rate-limiter.${{ github.event.release.tag_name }}.zip"
+          gzip: false
+          allow_override: true
