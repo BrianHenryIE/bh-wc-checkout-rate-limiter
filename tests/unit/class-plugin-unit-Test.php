@@ -77,6 +77,14 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
+		\WP_Mock::userFunction(
+			'get_option',
+			array(
+				'args'   => array( 'active_plugins' ),
+				'return' => array( 'woocommerce/woocommerce.php' ),
+			)
+		);
+
 		ob_start();
 
 		require_once $plugin_root_dir . '/bh-wc-checkout-rate-limiter.php';

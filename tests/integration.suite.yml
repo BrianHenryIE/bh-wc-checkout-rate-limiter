@@ -18,6 +18,6 @@ modules:
             domain: "%TEST_SITE_WP_DOMAIN%"
             adminEmail: "%TEST_SITE_ADMIN_EMAIL%"
             title: "bh-wc-checkout-rate-limiter"
-            plugins: ['bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php']
-            activatePlugins: ['bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php']
+            plugins: ['woocommerce/woocommerce.php','bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php']
+            activatePlugins: ['woocommerce/woocommerce.php','bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php']
 bootstrap: _bootstrap.php

@@ -17,11 +17,11 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../bh-wp-logger"
+            "url": "https://github.com/WordPress/wordpress-develop",
+            "type": "git"
         },
         {
-            "url": "https://github.com/WordPress/wordpress-develop",
+            "url": "https://github.com/BrianHenryIE/dist-archive-command",
             "type": "git"
         },
         {
@@ -46,7 +46,8 @@
         "brianhenryie/wp-logger": "dev-master",
         "nikolaposa/rate-limit": "^2.2",
         "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master",
-        "wp-oop/transient-cache": "^0.1.0@alpha"
+        "wp-oop/transient-cache": "^0.1.0@alpha",
+        "ext-curl": "*"
     },
     "require-dev": {
         "10up/wp_mock": "0.4.2",
@@ -65,14 +66,16 @@
         "jaschilz/php-coverage-badger": "^2.0",
         "kporras07/composer-symlinks": "dev-master",
         "lucatume/wp-browser": "*",
-        "phpcompatibility/phpcompatibility-wp": "*",
         "php-stubs/woocommerce-stubs": "^5.2",
+        "phpcompatibility/phpcompatibility-wp": "*",
         "phpstan/extension-installer": "^1.1",
         "phpunit/phpcov": "*",
         "squizlabs/php_codesniffer": "*",
         "szepeviktor/phpstan-wordpress": "^0.7.2",
         "voku/portable-ascii": "dev-master",
+        "woocommerce/woocommerce-sniffs": "*",
         "wordpress/wordpress": "*",
+        "wp-cli/dist-archive-command": "dev-master",
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
         "wpackagist-plugin/woocommerce": "^5.1",
@@ -92,7 +95,7 @@
         },
         "strauss": {
             "target_directory": "/src/strauss/",
-            "dep_namespace": "BrianHenryIE\\Checkout_Rate_Limiter\\",
+            "namespace_prefix": "BrianHenryIE\\Checkout_Rate_Limiter\\",
             "exclude_from_copy": {
                 "file_patterns": [
                     "~nikolaposa/rate-limit/src/(Apcu|Predis|InMemory|Memcached|Redis)RateLimiter\\.php~"
@@ -148,6 +151,9 @@
             "vendor/bin/codecept run wpunit --coverage wpunit.cov",
             "vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
             "open tests/_output/html/index.html"
+        ],
+        "create-plugin-archive": [
+            "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp dist-archive src --plugin-dirname=$PLUGIN_SLUG"
         ]
     }
 }
