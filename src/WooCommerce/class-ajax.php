@@ -91,11 +91,25 @@ class Ajax {
 
 			$rate = Rate::custom( $allowed_access_count, $interval );
 
-			$status = $rate_limiter->limitSilently( $ip_address, $rate );
+			try {
+				$status = $rate_limiter->limitSilently( $ip_address, $rate );
+			} catch ( \RuntimeException $e ) {
+				$this->logger->error(
+					'Rate Limiter encountered an error when storing the access count.',
+					array(
+						'exception_message' => $e->getMessage(),
+						'e'                 => $e,
+					)
+				);
+				return;
+			}
 
+			/**
+			 * TODO: Log the $_REQUEST data (but remove credit card details).
+			 *
+			 * @see WC_Checkout::get_posted_data()
+			 */
 			if ( $status->limitExceeded() ) {
-
-				// TODO: Log the $_REQUEST data (but remove credit card details).
 
 				$this->logger->notice(
 					"{$ip_address} blocked with {$status->getRemainingAttempts()} remaining attempts for rate limit {$allowed_access_count} per {$interval} seconds.",
