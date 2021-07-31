@@ -43,14 +43,14 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 		\WP_Mock::userFunction(
 			'admin_url',
 			array(
-				'args'   => array( 'admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting' ),
-				'return' => 'admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting',
+				'args'   => array( 'admin.php?page=wc-settings&tab=checkout&section=checkout-rate-limiting' ),
+				'return' => 'admin.php?page=wc-settings&tab=checkout&section=checkout-rate-limiting',
 			)
 		);
 
 		$result = $sut->action_links( array() );
 
-		$this->assertEquals( '<a href="admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting">Settings</a>', $result[0] );
+		$this->assertEquals( '<a href="admin.php?page=wc-settings&tab=checkout&section=checkout-rate-limiting">Settings</a>', $result[0] );
 
 	}
 

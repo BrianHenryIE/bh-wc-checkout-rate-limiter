@@ -52,7 +52,7 @@ class Plugins_Page {
 	 */
 	public function action_links( $links_array ): array {
 
-		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting' );
+		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=checkout-rate-limiting' );
 
 		array_unshift( $links_array, '<a href="' . $settings_url . '">Settings</a>' );
 
