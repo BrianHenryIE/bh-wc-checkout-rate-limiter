@@ -40,22 +40,13 @@ class Ajax {
 	protected Settings_Interface $settings;
 
 	/**
-	 * DI rate limiter.
-	 *
-	 * @var SilentRateLimiter|null
-	 */
-	protected ?SilentRateLimiter $rate_limiter;
-
-	/**
 	 * Instantiate.
 	 *
-	 * @param Settings_Interface     $settings The plugin settings.
-	 * @param LoggerInterface        $logger PSR logger.
-	 * @param SilentRateLimiter|null $rate_limiter Allow passing in a rate limiter instance for testing.
+	 * @param Settings_Interface $settings The plugin settings.
+	 * @param LoggerInterface    $logger PSR logger.
 	 */
-	public function __construct( Settings_Interface $settings, LoggerInterface $logger, ?SilentRateLimiter $rate_limiter = null ) {
-		$this->rate_limiter = $rate_limiter;
-		$this->settings     = $settings;
+	public function __construct( Settings_Interface $settings, LoggerInterface $logger ) {
+		$this->settings = $settings;
 		$this->setLogger( $logger );
 	}
 
@@ -83,16 +74,16 @@ class Ajax {
 
 		$ip_address = \WC_Geolocation::get_ip_address();
 
-		$rate_limiter = $this->rate_limiter ?? new WordPress_RateLimiter( 'checkout' );
-
 		foreach ( $limits as $interval => $allowed_access_count ) {
 
 			$this->logger->debug( "Checking {$ip_address} rate limit {$allowed_access_count} per {$interval} seconds." );
 
 			$rate = Rate::custom( $allowed_access_count, $interval );
 
+			$rate_limiter = new WordPress_RateLimiter( $rate, 'checkout' );
+
 			try {
-				$status = $rate_limiter->limitSilently( $ip_address, $rate );
+				$status = $rate_limiter->limitSilently( $ip_address );
 			} catch ( \RuntimeException $e ) {
 				$this->logger->error(
 					'Rate Limiter encountered an error when storing the access count.',

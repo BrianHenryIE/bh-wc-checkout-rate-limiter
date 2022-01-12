@@ -17,11 +17,15 @@
     },
     "repositories": [
         {
+            "type": "path",
+            "url": "../bh-wp-logger"
+        },
+        {
             "url": "https://github.com/WordPress/wordpress-develop",
             "type": "git"
         },
         {
-            "url": "https://github.com/BrianHenryIE/dist-archive-command",
+            "url": "https://github.com/BrianHenryIE/transient-cache",
             "type": "git"
         },
         {
@@ -37,19 +41,24 @@
             "type": "git"
         },
         {
+            "url": "https://github.com/BrianHenryIE/rate-limit",
+            "type": "git"
+        },
+        {
             "type":"composer",
             "url":"https://wpackagist.org"
         }
     ],
     "require": {
         "php": ">=7.4",
-        "brianhenryie/wp-logger": "dev-master",
-        "nikolaposa/rate-limit": "^2.2",
+        "brianhenryie/bh-wp-logger": "dev-master",
+        "nikolaposa/rate-limit": "dev-psr-16",
         "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master",
-        "wp-oop/transient-cache": "^0.1.0@alpha",
+        "wp-oop/transient-cache": "dev-php-version-requirement",
         "ext-curl": "*"
     },
     "require-dev": {
+        "antecedent/patchwork": "^2.1",
         "10up/wp_mock": "0.4.2",
         "brianhenryie/color-logger": "^1.0",
         "brianhenryie/composer-phpstorm": "dev-master",
@@ -78,7 +87,7 @@
         "wp-cli/dist-archive-command": "dev-master",
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
-        "wpackagist-plugin/woocommerce": "^5.1",
+        "wpackagist-plugin/woocommerce": "*",
         "wpackagist-theme/storefront": "*"
     },
     "extra": {
@@ -88,9 +97,6 @@
             },
             "10up/wp_mock": {
                 "Add AnyObject matcher": "https://github.com/BrianHenryIE/wp_mock/pull/1.patch"
-            },
-            "nikolaposa/rate-limit": {
-                "Add PSR-16 rate limiter": "https://github.com/nikolaposa/rate-limit/pull/49.patch"
             }
         },
         "strauss": {
@@ -103,6 +109,15 @@
             },
             "namespace_replacement_patterns":  {
                 "/BrianHenryIE\\\\(.*)/": "BrianHenryIE\\Checkout_Rate_Limiter\\\\$1"
+            },
+            "override_autoload": {
+                "yahnis-elsts/plugin-update-checker": {
+                    "classmap": ["Puc"],
+                    "files": ["load-v4p11.php","vendor/PucReadmeParser.php"]
+                },
+                "erusev/parsedown": {
+                    "files": ["Parsedown.php"]
+                }
             }
         },
         "symlinks": {
@@ -152,8 +167,16 @@
             "vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
             "open tests/_output/html/index.html"
         ],
+        "lint": [
+            "vendor/bin/phpcbf || true",
+            "vendor/bin/phpcs || true",
+            "vendor/bin/phpstan analyse --memory-limit 1G"
+        ],
+        "lint-changes": [
+            "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); vendor/bin/phpcbf $(echo $updated_files); vendor/bin/phpcs $(echo $updated_files); vendor/bin/phpstan analyse $(echo $updated_files) --memory-limit 1G"
+        ],
         "create-plugin-archive": [
-            "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp dist-archive src --plugin-dirname=$PLUGIN_SLUG"
+            "vendor/bin/wp dist-archive src --plugin-dirname=$(basename \"$PWD\")"
         ]
     }
 }

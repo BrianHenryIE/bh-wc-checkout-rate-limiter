@@ -15,10 +15,11 @@ class WordPress_RateLimiter_WP_Unit_Test extends \Codeception\TestCase\WPTestCas
 	 */
 	public function test_constructor() {
 
-		$sut = new WordPress_RateLimiter();
+		$rate = Rate::perMinute( 2 );
+
+		$sut = new WordPress_RateLimiter( $rate );
 
 		$this->assertInstanceOf( Psr16RateLimiter::class, $sut );
-
 	}
 
 	/**
@@ -31,15 +32,33 @@ class WordPress_RateLimiter_WP_Unit_Test extends \Codeception\TestCase\WPTestCas
 	 */
 	public function test_happy_path_use() {
 
-		$sut = new WordPress_RateLimiter();
+		$rate = Rate::perMinute( 2 );
+
+		$sut = new WordPress_RateLimiter( $rate );
 
 		$rate = Rate::custom( 3, 60 );
 
-		$status = $sut->limitSilently( '127.0.0.1', $rate );
+		$status = $sut->limitSilently( '127.0.0.1' );
 
 		$this->assertInstanceOf( Status::class, $status );
-
 	}
 
+	/**
+	 * PHP Fatal error:  Uncaught RuntimeException: set_transient() failed with key "checkout/checkout83.116.144.11-60" with TTL 60s in /.../wp-content/plugins/bh-wc-checkout-rate-limiter/strauss/wp-oop/transient-cache/src/CachePool.php:321
+	 *
+	 * @see CachePool::setTransient()
+	 */
+	public function test_reserved_characters() {
+
+		$this->markTestIncomplete();
+
+		$rate         = Rate::custom( 3, 60 );
+		$rate_limiter = new WordPress_RateLimiter( $rate, 'checkout' );
+
+		$ip_address = '83.116.144.11';
+
+		$status = $rate_limiter->limitSilently( $ip_address );
+
+	}
 
 }

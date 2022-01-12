@@ -8,9 +8,6 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter;
 
-use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use Psr\Log\NullLogger;
 use ReflectionClass;
 
 /**
