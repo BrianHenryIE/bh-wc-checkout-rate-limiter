@@ -8,13 +8,12 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter;
 
+use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
 use BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter;
-use Psr\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Plugin_WP_Mock_Test
- *
- * @coversNothing
  */
 class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
@@ -32,6 +31,12 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 	 * Verifies the plugin does not output anything to screen.
 	 */
 	public function test_plugin_include_no_output() {
+
+		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
+		\Patchwork\redefine(
+			array( BH_WC_Checkout_Rate_Limiter::class, '__construct' ),
+			function( Settings_Interface $settings, LoggerInterface $logger ) {}
+		);
 
 		$plugin_root_dir = dirname( __DIR__, 2 ) . '/src';
 
@@ -51,6 +56,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			'register_deactivation_hook'
 		);
 
+		// bh-wp-logger related mocks.
 		\WP_Mock::userFunction(
 			'get_option',
 			array(
@@ -85,9 +91,23 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
+		\WP_Mock::userFunction(
+			'did_action',
+			array(
+				'return' => false,
+			)
+		);
+
+		\WP_Mock::userFunction(
+			'add_action',
+			array(
+				'return' => false,
+			)
+		);
+
 		ob_start();
 
-		require_once $plugin_root_dir . '/bh-wc-checkout-rate-limiter.php';
+		include $plugin_root_dir . '/bh-wc-checkout-rate-limiter.php';
 
 		$printed_output = ob_get_contents();
 
