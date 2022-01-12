@@ -134,6 +134,6 @@ class BH_WC_Checkout_Rate_Limiter {
 
 		$plugins_page = new Plugins_Page( $this->settings, $this->logger );
 
-		add_filter( "plugin_action_links_{$this->settings->get_plugin_basename()}", array( $plugins_page, 'action_links' ) );
+		add_filter( "plugin_action_links_{$this->settings->get_plugin_basename()}", array( $plugins_page, 'action_links' ), 10, 4 );
 	}
 }

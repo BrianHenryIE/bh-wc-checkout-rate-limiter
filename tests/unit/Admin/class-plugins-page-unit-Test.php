@@ -48,7 +48,7 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$result = $sut->action_links( array() );
+		$result = $sut->action_links( array(), '', array(), '' );
 
 		$this->assertEquals( '<a href="admin.php?page=wc-settings&tab=checkout&section=checkout-rate-limiting">Settings</a>', $result[0] );
 

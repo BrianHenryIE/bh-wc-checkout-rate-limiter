@@ -46,17 +46,21 @@ class Plugins_Page {
 	 *
 	 * @hooked plugin_action_links_{basename}
 	 *
-	 * @param array<int|string, string> $links_array The existing plugin links (usually "Deactivate").
+	 * @param array<int|string, string> $action_links The existing plugin links (usually "Deactivate").
+	 * @param string                    $plugin_basename The plugin's directory/filename.php.
+	 * @param array                     $plugin_data An array of plugin data. See `get_plugin_data()`.
+	 * @param string                    $context     The plugin context. By default this can include 'all', 'active', 'inactive',
+	 *                                               'recently_activated', 'upgrade', 'mustuse', 'dropins', and 'search'.
 	 *
 	 * @return array<int|string, string> The links to display below the plugin name on plugins.php.
 	 */
-	public function action_links( $links_array ): array {
+	public function action_links( array $action_links, string $plugin_basename, array $plugin_data, string $context ): array {
 
 		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=checkout-rate-limiting' );
 
-		array_unshift( $links_array, '<a href="' . $settings_url . '">Settings</a>' );
+		array_unshift( $action_links, '<a href="' . $settings_url . '">Settings</a>' );
 
-		return $links_array;
+		return $action_links;
 	}
 
 }

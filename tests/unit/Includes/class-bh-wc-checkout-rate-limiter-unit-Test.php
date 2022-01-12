@@ -100,7 +100,9 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 
 		\WP_Mock::expectFilterAdded(
 			"plugin_action_links_{$plugin_basename}",
-			array( new AnyInstance( Plugins_Page::class ), 'action_links' )
+			array( new AnyInstance( Plugins_Page::class ), 'action_links' ),
+			10,
+			4
 		);
 
 		$settings = $this->makeEmpty(
