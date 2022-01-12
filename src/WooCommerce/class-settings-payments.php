@@ -54,7 +54,7 @@ class Settings_Payments {
 	 *
 	 * /wp-admin/admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting
 	 *
-	 * @hooked woocommerce_get_sections_advanced
+	 * @hooked woocommerce_get_sections_checkout
 	 * @see \WC_Settings_Advanced::get_sections()
 	 *
 	 * @param array<string, string> $sections The horizontal subsections in the WooCommerce settings.
@@ -76,7 +76,7 @@ class Settings_Payments {
 	 *
 	 * * Empty cart?!
 	 *
-	 * @hooked woocommerce_get_settings_advanced
+	 * @hooked woocommerce_get_settings_checkout
 	 * @see \WC_Settings_Advanced::get_settings()
 	 *
 	 * @param array<int|string, array<string, mixed>> $settings WC_Settings_API settings fields.
