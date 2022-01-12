@@ -31,8 +31,9 @@ class WordPress_RateLimiter extends Psr16RateLimiter {
 	/**
 	 * WordPress_RateLimiter constructor.
 	 *
-	 * TODO: $key_prefix is currently being used to prefix the transient name in two places, i.e. twice / double prefixed.
+	 * TODO: In rate_limit v2, $key_prefix was being used to prefix the transient name in two places, i.e. twice / double prefixed. Check is this still the case.
 	 *
+	 * @param Rate   $rate The allowable number of times per period.
 	 * @param string $key_prefix The cache pool name and keyprefix.
 	 */
 	public function __construct( Rate $rate, string $key_prefix = '' ) {

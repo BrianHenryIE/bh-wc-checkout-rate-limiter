@@ -3,12 +3,15 @@
  * The logger was using Klogger and causing a problem when unable to write to that directory.
  *
  * @see https://github.com/BrianHenryIE/bh-wc-checkout-rate-limiter/issues/8
+ *
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
 namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
+use WP_Filesystem_Base;
 
 class Logging_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
@@ -29,19 +32,19 @@ class Logging_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		do_action( 'plugins_loaded' );
 
 		global $project_root_dir;
-		$date = date( 'Y-m-d' );
+		$date = gmdate( 'Y-m-d' );
 
-		// KLogger
+		// KLogger.
 		$this->assertFileNotExists( $project_root_dir . "/wp-content/uploads/logs/bh-wc-checkout-rate-limiter-{$date}.log" );
 
-		// WC_Logger
-
+		// WC_Logger.
 		global $project_root_dir;
 		$logs_dir  = $project_root_dir . '/wp-content/uploads/wc-logs/';
 		$log_files = glob( "$logs_dir/bh-wc-checkout-rate-limiter-{$date}-*.log" );
 
 		$this->assertNotEmpty( $log_files );
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$log_file_contents = file_get_contents( $log_files[0] );
 
 		$this->assertStringContainsString( $log_message, $log_file_contents );

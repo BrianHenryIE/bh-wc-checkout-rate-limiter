@@ -15,14 +15,14 @@ namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
  */
 class I18n_Unit_Test extends \Codeception\Test\Unit {
 
-	protected function _before() {
+	protected function setup() : void {
+		parent::setUp();
 		\WP_Mock::setUp();
 	}
 
-	// This is required for `'times' => 1` to be verified.
-	protected function _tearDown() {
-		parent::_tearDown();
+	public function tearDown(): void {
 		\WP_Mock::tearDown();
+		parent::tearDown();
 	}
 
 	/**
@@ -32,17 +32,31 @@ class I18n_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_load_plugin_textdomain() {
 
-		global $plugin_root_dir;
+		\WP_Mock::userFunction(
+			'plugin_basename',
+			array(
+				'args'   => array(
+					\WP_Mock\Functions::type( 'string' ),
+				),
+				'return' => 'bh-wc-checkout-rate-limiter',
+				'times'  => 1,
+			)
+		);
 
 		\WP_Mock::userFunction(
 			'load_plugin_textdomain',
 			array(
-				'args' => array(
+				'times' => 1,
+				'args'  => array(
 					'bh-wc-checkout-rate-limiter',
 					false,
-					$plugin_root_dir . '/languages/',
+					'bh-wc-checkout-rate-limiter/languages/',
 				),
 			)
 		);
+
+		$i18n = new I18n();
+		$i18n->load_plugin_textdomain();
+
 	}
 }

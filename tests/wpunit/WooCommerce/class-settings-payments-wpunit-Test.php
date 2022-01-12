@@ -19,7 +19,7 @@ class Settings_Payments_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * `PHP Warning: Illegal string offset 'interval' in .../WooCommerce/class-settings-advanced.php on line 196`
 	 */
-	public function test_first_run_empty_variables() {
+	public function test_first_run_empty_variables(): void {
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();

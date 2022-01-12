@@ -153,7 +153,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		// Without sleeping, the following exception occurs:
 		// @see WpOop\TransientCache\CachePool::set()
 		// new CacheException($message, 0, $e);
-		// "Could not write value for key "checkout8.104.172.231--60" to cache: set_transient() failed with key "checkout/checkout8.104.172.231--60" with TTL 60s"
+		// "Could not write value for key "checkout8.104.172.231--60" to cache: set_transient() failed with key "checkout/checkout8.104.172.231--60" with TTL 60s".
 
 		sleep( 1 );
 

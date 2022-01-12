@@ -20,14 +20,14 @@ use WP_Mock\Matcher\AnyInstance;
  */
 class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 
-	protected function _before() {
+	protected function setup() : void {
+		parent::setUp();
 		\WP_Mock::setUp();
 	}
 
-	// This is required for `'times' => 1` to be verified.
-	protected function _tearDown() {
-		parent::_tearDown();
+	public function tearDown(): void {
 		\WP_Mock::tearDown();
+		parent::tearDown();
 	}
 
 	/**

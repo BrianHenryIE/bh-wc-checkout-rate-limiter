@@ -6,7 +6,7 @@ class SettingsPageCest {
 	/**
 	 * Login.
 	 *
-	 * @param AcceptanceTester $I
+	 * @param AcceptanceTester $I The Codeception actor class.
 	 */
 	public function _before( AcceptanceTester $I ) {
 		$I->loginAsAdmin();
@@ -16,7 +16,7 @@ class SettingsPageCest {
 	/**
 	 * Verify the settings link is present on the WooCommerce / Settings / Payments page.
 	 *
-	 * @param AcceptanceTester $I
+	 * @param AcceptanceTester $I The Codeception actor class.
 	 */
 	public function testPluginsPageForName( AcceptanceTester $I ) {
 
