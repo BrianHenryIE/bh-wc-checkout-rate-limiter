@@ -84,11 +84,6 @@ class Admin {
 			return;
 		}
 
-		if ( $this->settings->is_enabled() ) {
-			// Already configured.
-			return;
-		}
-
 		// Don't show it on the settings page itself.
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['section'] ) && 'checkout-rate-limiting' === $_GET['section'] ) {
@@ -99,8 +94,15 @@ class Admin {
 
 		$last_activated = intval( array_pop( $last_activated_times ) );
 
-		// If last activation was longer than a week ago, return.
+		// If last activation was longer than a week ago, stop annoying users with the admin notice.
 		if ( $last_activated < time() - WEEK_IN_SECONDS ) {
+			return;
+		}
+
+		$last_visited_time = get_option( 'bh_wc_checkout_rate_limiter_visited_settings_time', 0 );
+
+		// If the settings page has been viewed since the plug was activated, do not show it.
+		if ( $last_visited_time > $last_activated ) {
 			return;
 		}
 
@@ -112,7 +114,7 @@ class Admin {
 
 		$id      = $this->settings->get_plugin_slug() . '-activation-configuration';
 		$title   = '';
-		$message = "{$this->settings->get_plugin_name()} needs to be configured. Please <a href=\"{$settings_url}\">visit the settings page</a> to configure and enable.";
+		$message = '<strong>' . $this->settings->get_plugin_name() . '</strong> ' . __( 'options can be configured under', 'bh-wc-checkout-rate-limiter' ) . " <a href=\"{$settings_url}\">WooCommerce / Settings / Payments / Rate Limiting</a>.";
 
 		$options = array(
 			'capability' => 'manage_options',

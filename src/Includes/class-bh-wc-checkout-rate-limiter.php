@@ -109,6 +109,8 @@ class BH_WC_Checkout_Rate_Limiter {
 
 		$settings_advanced = new Settings_Payments( $this->settings, $this->logger );
 
+		add_action( 'current_screen', array( $settings_advanced, 'record_page_visit_time' ) );
+
 		add_filter( 'woocommerce_get_sections_checkout', array( $settings_advanced, 'add_section' ) );
 		add_filter( 'woocommerce_get_settings_checkout', array( $settings_advanced, 'settings' ), 10, 2 );
 

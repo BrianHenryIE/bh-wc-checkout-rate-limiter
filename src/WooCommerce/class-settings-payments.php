@@ -50,6 +50,35 @@ class Settings_Payments {
 	}
 
 	/**
+	 * Record the last visited time of the settings page so the admin notice can be hidden.
+	 *
+	 * @hooked current_screen
+	 */
+	public function record_page_visit_time(): void {
+
+		$wc_admin_url = wc_get_current_admin_url();
+
+		if ( empty( $wc_admin_url ) ) {
+			return;
+		}
+
+		$url_parts = wp_parse_url( $wc_admin_url );
+
+		if ( empty( $url_parts['query'] ) ) {
+			return;
+		}
+
+		$query_parts = array();
+		wp_parse_str( $url_parts['query'], $query_parts );
+
+		if ( 'checkout-rate-limiting' !== $query_parts['section'] ) {
+			return;
+		}
+
+		update_option( 'bh_wc_checkout_rate_limiter_visited_settings_time', time() );
+	}
+
+	/**
 	 * Add the settings section to WordPress/WooCommerce/Settings/Advanced/Rate Limiting
 	 *
 	 * /wp-admin/admin.php?page=wc-settings&tab=advanced&section=checkout-rate-limiting
@@ -99,29 +128,41 @@ class Settings_Payments {
 
 		// TODO: Add link to GitHub. Add link to logs.
 
-		$settings[] = array(
+		$settings['bh_wc_checkout_rate_limiter_checkout_rate_limiting_enabled'] = array(
 			'title'   => __( 'Limit checkout attempts', 'bh-wc-checkout-rate-limiter' ),
 			'desc'    => __( 'When enabled, each IP address can only make as many attempts at payment as specified below.', 'bh-wc-checkout-rate-limiter' ),
 			'id'      => 'bh_wc_checkout_rate_limiter_checkout_rate_limiting_enabled',
 			'type'    => 'checkbox',
-			'default' => 'no',
+			'default' => 'yes',
 		);
 
 		// Attempts per interval.
-		$settings[] = array(
-			'title' => '',
-			'id'    => 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_1',
-			'type'  => 'attempts_per_interval',
+		$settings['bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_1'] = array(
+			'title'   => '',
+			'id'      => 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_1',
+			'type'    => 'attempts_per_interval',
+			'default' => array(
+				'interval' => 60,
+				'attempts' => 2,
+			),
 		);
-		$settings[] = array(
-			'title' => '',
-			'id'    => 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_2',
-			'type'  => 'attempts_per_interval',
+		$settings['bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_2'] = array(
+			'title'   => '',
+			'id'      => 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_2',
+			'type'    => 'attempts_per_interval',
+			'default' => array(
+				'interval' => 120,
+				'attempts' => 3,
+			),
 		);
-		$settings[] = array(
-			'title' => '',
-			'id'    => 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_3',
-			'type'  => 'attempts_per_interval',
+		$settings['bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_3'] = array(
+			'title'   => '',
+			'id'      => 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_3',
+			'type'    => 'attempts_per_interval',
+			'default' => array(
+				'interval' => 300,
+				'attempts' => 5,
+			),
 		);
 
 		$log_levels        = array( 'none', LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO, LogLevel::DEBUG );
@@ -130,13 +171,13 @@ class Settings_Payments {
 			$log_levels_option[ $log_level ] = ucfirst( $log_level );
 		}
 
-		$settings[] = array(
+		$settings['bh_wc_checkout_rate_limiter_log_level'] = array(
 			'title'    => __( 'Log Level', 'bh-wc-checkout-rate-limiter' ),
 			'label'    => __( 'Enable Logging', 'bh-wc-checkout-rate-limiter' ),
 			'type'     => 'select',
 			'options'  => $log_levels_option,
-			'desc'    => __( 'Increasingly detailed levels of logs. ', 'bh-wc-checkout-rate-limiter' ) . '<a href="' . admin_url( 'admin.php?page=bh-wc-checkout-rate-limiter-logs' ) . '">View Logs</a>',
-            'desc_tip' => false,
+			'desc'     => __( 'Increasingly detailed levels of logs. ', 'bh-wc-checkout-rate-limiter' ) . '<a href="' . admin_url( 'admin.php?page=bh-wc-checkout-rate-limiter-logs' ) . '">View Logs</a>',
+			'desc_tip' => false,
 			'default'  => 'notice',
 			'id'       => 'bh_wc_checkout_rate_limiter_log_level',
 		);

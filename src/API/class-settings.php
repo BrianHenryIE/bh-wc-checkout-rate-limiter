@@ -33,7 +33,7 @@ class Settings implements Settings_Interface, Logger_Settings_Interface, WooComm
 	 */
 	public function is_enabled(): bool {
 
-		$woocommerce_setting_enabled = 'yes' === get_option( 'bh_wc_checkout_rate_limiter_checkout_rate_limiting_enabled', 'no' );
+		$woocommerce_setting_enabled = 'yes' === get_option( 'bh_wc_checkout_rate_limiter_checkout_rate_limiting_enabled', 'yes' );
 		return $woocommerce_setting_enabled && count( $this->get_checkout_rate_limits() ) > 0;
 	}
 
@@ -44,10 +44,25 @@ class Settings implements Settings_Interface, Logger_Settings_Interface, WooComm
 	 */
 	public function get_checkout_rate_limits(): array {
 
+		$defaults = array(
+			1 => array(
+				'interval' => 60,
+				'attempts' => 2,
+			),
+			2 => array(
+				'interval' => 120,
+				'attempts' => 3,
+			),
+			3 => array(
+				'interval' => 300,
+				'attempts' => 5,
+			),
+		);
+
 		$rates = array();
 
 		foreach ( array( 1, 2, 3 ) as $index ) {
-			$rate = get_option( 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_' . $index, array() );
+			$rate = get_option( 'bh_wc_checkout_rate_limiter_allowed_attempts_per_interval_' . $index, $defaults[ $index ] );
 			if ( isset( $rate['interval'] ) && 0 !== intval( $rate['interval'] )
 				&& isset( $rate['attempts'] ) && 0 !== intval( $rate['attempts'] ) ) {
 				$rates[ intval( $rate['interval'] ) ] = intval( $rate['attempts'] );
