@@ -31,6 +31,17 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
+	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::__construct
+	 */
+	public function test_constructor(): void {
+
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new ColorLogger();
+
+		new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
+	}
+
+	/**
 	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::set_locale
 	 */
 	public function test_set_locale_hooked() {
