@@ -49,6 +49,14 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		\WP_Mock::userFunction(
+			'plugin_basename',
+			array(
+				'args'   => array( \WP_Mock\Functions::type( 'string' ) ),
+				'return' => 'bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php',
+			)
+		);
+
+		\WP_Mock::userFunction(
 			'register_activation_hook'
 		);
 

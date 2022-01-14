@@ -98,6 +98,6 @@ class Settings implements Settings_Interface, Logger_Settings_Interface, WooComm
 	 * @return string
 	 */
 	public function get_plugin_basename(): string {
-		return 'bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php';
+		return defined( 'BH_WC_CHECKOUT_RATE_LIMITER_BASENAME' ) ? BH_WC_CHECKOUT_RATE_LIMITER_BASENAME : 'bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php';
 	}
 }

@@ -47,6 +47,8 @@ require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
  */
 define( 'BH_WC_CHECKOUT_RATE_LIMITER_VERSION', '1.1.0' );
 
+define( 'BH_WC_CHECKOUT_RATE_LIMITER_BASENAME', plugin_basename( __FILE__ ) );
+
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
 register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) );
 
