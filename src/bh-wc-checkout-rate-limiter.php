@@ -16,6 +16,7 @@
  * Plugin URI:        http://github.com/brianhenryie/bh-wc-checkout-rate-limiter/
  * Description:       Rate limit the WooCommerce checkout to prevent card attacks.
  * Version:           1.1.0
+ * Requires PHP:      7.4
  * Author:            BrianHenryIE
  * Author URI:        https://BrianHenry.IE
  * License:           GPL-2.0+
