@@ -135,8 +135,8 @@ class Settings_Payments {
 			'label'    => __( 'Enable Logging', 'bh-wc-checkout-rate-limiter' ),
 			'type'     => 'select',
 			'options'  => $log_levels_option,
-			'desc'     => __( 'Increasingly detailed logging.', 'bh-wc-checkout-rate-limiter' ),
-			'desc_tip' => true,
+			'desc'    => __( 'Increasingly detailed levels of logs. ', 'bh-wc-checkout-rate-limiter' ) . '<a href="' . admin_url( 'admin.php?page=bh-wc-checkout-rate-limiter-logs' ) . '">View Logs</a>',
+            'desc_tip' => false,
 			'default'  => 'notice',
 			'id'       => 'bh_wc_checkout_rate_limiter_log_level',
 		);
