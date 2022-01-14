@@ -76,7 +76,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 		\WP_Mock::userFunction(
 			'is_admin',
 			array(
-				'return_arg' => false,
+				'return' => false,
 			)
 		);
 
