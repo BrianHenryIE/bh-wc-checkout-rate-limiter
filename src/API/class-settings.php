@@ -11,9 +11,9 @@
 namespace BrianHenryIE\Checkout_Rate_Limiter\API;
 
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
-use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\API\Logger_Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger_Settings_Trait;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\WooCommerce_Logger_Settings_Interface;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
-use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\WooCommerce\WooCommerce_Logger_Interface;
 use Psr\Log\LogLevel;
 
 /**
@@ -24,7 +24,8 @@ use Psr\Log\LogLevel;
  * Class Settings
  * @package BrianHenryIE\Checkout_Rate_Limiter\API
  */
-class Settings implements Settings_Interface, Logger_Settings_Interface, WooCommerce_Logger_Interface {
+class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interface {
+	use Logger_Settings_Trait;
 
 	/**
 	 * Is the setting enabled in the settings UI and ratelimits set?
