@@ -1,5 +1,14 @@
 # Changelog
 
+### 1.1.1
+
+* Improve translating strings
+* Add sensible defaults
+* Set "Requires PHP" header (7.4)
+* Add links to logs from settings page
+* Update Rate Limit library
+* Improved test coverage and documentation
+
 ### 1.1.0
 
 * Move Settings screen to Payments tab

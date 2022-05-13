@@ -13,42 +13,52 @@
     "prefer-stable": true,
     "config": {
         "process-timeout": 0,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "cweagans/composer-patches": true,
+            "composer/installers": true,
+            "phpstan/extension-installer": true
+        }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../bh-wp-logger"
+    "repositories": {
+        "brianhenryie/bh-wp-private-uploads": {
+            "type": "git",
+            "url": "https://github.com/brianhenryie/bh-wp-private-uploads"
         },
-        {
+        "wptrt/admin-notices": {
+            "type": "git",
+            "url": "https://github.com/brianhenryie/admin-notices"
+        },
+        "brianhenryie/bh-wp-logger": {
+            "type": "git",
+            "url": "https://github.com/brianhenryie/bh-wp-logger"
+        },
+        "0": {
+            "type": "path",
+            "url": "../license-server"
+        },
+        "1": {
             "url": "https://github.com/WordPress/wordpress-develop",
             "type": "git"
         },
-        {
+        "2": {
             "url": "https://github.com/BrianHenryIE/transient-cache",
             "type": "git"
         },
-        {
+        "3": {
             "url": "https://github.com/BrianHenryIE/composer-phpstorm",
             "type": "git"
         },
-        {
-            "url": "https://github.com/BrianHenryIE/admin-notices",
-            "type": "git"
-        },
-        {
-            "url": "https://github.com/BrianHenryIE/bh-wp-logger",
-            "type": "git"
-        },
-        {
+        "4": {
             "url": "https://github.com/BrianHenryIE/rate-limit",
             "type": "git"
         },
-        {
-            "type":"composer",
-            "url":"https://wpackagist.org"
+        "5": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
         }
-    ],
+    },
     "require": {
         "php": ">=7.4",
         "brianhenryie/bh-wp-logger": "dev-master",
@@ -58,8 +68,8 @@
         "ext-curl": "*"
     },
     "require-dev": {
-        "antecedent/patchwork": "^2.1",
         "10up/wp_mock": "0.4.2",
+        "antecedent/patchwork": "^2.1",
         "brianhenryie/color-logger": "^1.0",
         "brianhenryie/composer-phpstorm": "dev-master",
         "brianhenryie/strauss": "*",
@@ -75,7 +85,7 @@
         "jaschilz/php-coverage-badger": "^2.0",
         "kporras07/composer-symlinks": "dev-master",
         "lucatume/wp-browser": "*",
-        "php-stubs/woocommerce-stubs": "^5.2",
+        "php-stubs/woocommerce-stubs": "^6.4",
         "phpcompatibility/phpcompatibility-wp": "*",
         "phpstan/extension-installer": "^1.1",
         "phpunit/phpcov": "*",
@@ -84,11 +94,11 @@
         "voku/portable-ascii": "dev-master",
         "woocommerce/woocommerce-sniffs": "*",
         "wordpress/wordpress": "*",
-        "wp-cli/dist-archive-command": "dev-master",
+        "wp-cli/dist-archive-command": "dev-main",
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
         "wpackagist-plugin/woocommerce": "*",
-        "wpackagist-theme/storefront": "*"
+        "wpackagist-theme/storefront": "^4.1"
     },
     "extra": {
         "patches": {
@@ -102,22 +112,15 @@
         "strauss": {
             "target_directory": "/src/strauss/",
             "namespace_prefix": "BrianHenryIE\\Checkout_Rate_Limiter\\",
+            "classmap_prefix": "BH_Checkout_Rate_Limiter_",
             "exclude_from_copy": {
                 "file_patterns": [
-                    "~nikolaposa/rate-limit/src/(Apcu|Predis|InMemory|Memcached|Redis)RateLimiter\\.php~"
+                    "~nikolaposa/rate-limit/src/(Apcu|Predis|InMemory|Memcached|Redis)RateLimiter\\.php~",
+                    "~psr/log/Psr/Log/Test.*~"
                 ]
             },
-            "namespace_replacement_patterns":  {
+            "namespace_replacement_patterns": {
                 "/BrianHenryIE\\\\(.*)/": "BrianHenryIE\\Checkout_Rate_Limiter\\\\$1"
-            },
-            "override_autoload": {
-                "yahnis-elsts/plugin-update-checker": {
-                    "classmap": ["Puc"],
-                    "files": ["load-v4p11.php","vendor/PucReadmeParser.php"]
-                },
-                "erusev/parsedown": {
-                    "files": ["Parsedown.php"]
-                }
             }
         },
         "symlinks": {
@@ -151,7 +154,7 @@
         ],
         "post-update-cmd": [
             "vendor/bin/strauss",
-            "vendor/bin/wp core download --path=wordpress --allow-root || true;",
+            "vendor/bin/wp core download --path=wordpress --allow-root || true; wp core update --allow-root || true",
             "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root --extra-php=\"define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );\" || true",
             "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
             "mkdir -p wordpress/wp-content/uploads",
