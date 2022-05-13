@@ -15,7 +15,7 @@
  * Plugin Name:       Checkout Rate Limiter
  * Plugin URI:        http://github.com/brianhenryie/bh-wc-checkout-rate-limiter/
  * Description:       Rate limit the WooCommerce checkout to prevent card attacks.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires PHP:      7.4
  * Author:            BrianHenryIE
  * Author URI:        https://BrianHenry.IE
@@ -33,20 +33,15 @@ use BrianHenryIE\Checkout_Rate_Limiter\Includes\Activator;
 use BrianHenryIE\Checkout_Rate_Limiter\Includes\Deactivator;
 use BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter;
 
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-	die;
+	throw new \Exception( 'WPINC not defined' );
 }
 
 require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 
-/**
- * Current plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'BH_WC_CHECKOUT_RATE_LIMITER_VERSION', '1.1.0' );
-
+define( 'BH_WC_CHECKOUT_RATE_LIMITER_VERSION', '1.1.1' );
 define( 'BH_WC_CHECKOUT_RATE_LIMITER_BASENAME', plugin_basename( __FILE__ ) );
 
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
@@ -67,6 +62,11 @@ function instantiate_bh_wc_checkout_rate_limiter(): void {
 	$logger   = Logger::instance( $settings );
 
 	new BH_WC_Checkout_Rate_Limiter( $settings, $logger );
+
+	if ( class_exists( BH_Checkout_Rate_Limiter_SLSWC_Client::class ) ) {
+		\BH_Checkout_Rate_Limiter_SLSWC_Client::get_instance( 'https://bhwp.ie/', __FILE__ );
+	}
 }
 
 instantiate_bh_wc_checkout_rate_limiter();
+
