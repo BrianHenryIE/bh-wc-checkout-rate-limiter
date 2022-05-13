@@ -24,6 +24,13 @@ class Settings_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
+	 * Default to enabled.
+	 */
+	public function test_is_enabled_unconfigured(): void {
+		$this->markTestIncomplete();
+	}
+
+	/**
 	 * @covers ::get_plugin_basename
 	 */
 	public function test_basename(): void {
