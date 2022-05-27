@@ -38,19 +38,23 @@
             "type": "path",
             "url": "../license-server"
         },
-        "1": {
+        "wordpress/wordpress": {
             "url": "https://github.com/WordPress/wordpress-develop",
             "type": "git"
         },
-        "2": {
+        "wp-oop/transient-cache": {
             "url": "https://github.com/BrianHenryIE/transient-cache",
             "type": "git"
+        },
+        "brianhenryie/bh-wp-rate-limiter": {
+            "type": "path",
+            "url": "../bh-wp-rate-limiter"
         },
         "3": {
             "url": "https://github.com/BrianHenryIE/composer-phpstorm",
             "type": "git"
         },
-        "4": {
+        "nikolaposa/rate-limit": {
             "url": "https://github.com/BrianHenryIE/rate-limit",
             "type": "git"
         },
@@ -62,9 +66,8 @@
     "require": {
         "php": ">=7.4",
         "brianhenryie/bh-wp-logger": "dev-master",
-        "nikolaposa/rate-limit": "dev-psr-16",
+        "brianhenryie/bh-wp-rate-limiter": "dev-master",
         "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master",
-        "wp-oop/transient-cache": "dev-php-version-requirement",
         "ext-curl": "*"
     },
     "require-dev": {

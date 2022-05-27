@@ -14,11 +14,10 @@
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\API\RateLimiter\WordPress_RateLimiter;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Rate_Limiter\WordPress_Rate_Limiter;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
-use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\SilentRateLimiter;
 
 /**
  * Hooked on wc_ajax_checkout earlier than WooCommerce's own processing code.
@@ -80,7 +79,7 @@ class Ajax {
 
 			$rate = Rate::custom( $allowed_access_count, $interval );
 
-			$rate_limiter = new WordPress_RateLimiter( $rate, 'checkout' );
+			$rate_limiter = new WordPress_Rate_Limiter( $rate, 'checkout' );
 
 			try {
 				$status = $rate_limiter->limitSilently( $ip_address );
@@ -88,8 +87,7 @@ class Ajax {
 				$this->logger->error(
 					'Rate Limiter encountered an error when storing the access count.',
 					array(
-						'exception_message' => $e->getMessage(),
-						'e'                 => $e,
+						'exception' => $e,
 					)
 				);
 				return;
