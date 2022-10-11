@@ -56,6 +56,10 @@ class Settings_Payments {
 	 */
 	public function record_page_visit_time(): void {
 
+		if ( ! function_exists( 'wc_get_current_admin_url' ) ) {
+			return;
+		}
+
 		$wc_admin_url = wc_get_current_admin_url();
 
 		if ( empty( $wc_admin_url ) ) {
