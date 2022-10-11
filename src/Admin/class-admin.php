@@ -5,13 +5,13 @@
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  * @link       https://BrianHenryIE.com
  * @since      1.0.0
- * @package    BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\Admin;
 
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\Includes\Activator;
+use BrianHenryIE\Checkout_Rate_Limiter\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Activator;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use BrianHenryIE\Checkout_Rate_Limiter\WPTRT\AdminNotices\Notices;

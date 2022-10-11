@@ -2,14 +2,13 @@
 /**
  * Tests for the root plugin file.
  *
- * @package BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
 namespace BrianHenryIE\Checkout_Rate_Limiter;
 
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
-use BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -32,19 +31,25 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_plugin_include_no_output() {
 
+		global $plugin_root_dir;
+
 		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
 		\Patchwork\redefine(
 			array( BH_WC_Checkout_Rate_Limiter::class, '__construct' ),
 			function( Settings_Interface $settings, LoggerInterface $logger ) {}
 		);
 
-		$plugin_root_dir = dirname( __DIR__, 2 ) . '/src';
+		\Patchwork\redefine(
+			array( Logger::class, '__construct' ),
+			function( $settings ) {}
+		);
 
 		\WP_Mock::userFunction(
 			'plugin_dir_path',
 			array(
 				'args'   => array( \WP_Mock\Functions::type( 'string' ) ),
 				'return' => $plugin_root_dir . '/',
+				'times'  => 1,
 			)
 		);
 
@@ -53,63 +58,21 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'args'   => array( \WP_Mock\Functions::type( 'string' ) ),
 				'return' => 'bh-wc-checkout-rate-limiter/bh-wc-checkout-rate-limiter.php',
+				'times'  => 1,
 			)
 		);
 
 		\WP_Mock::userFunction(
-			'register_activation_hook'
-		);
-
-		\WP_Mock::userFunction(
-			'register_deactivation_hook'
-		);
-
-		// bh-wp-logger related mocks.
-		\WP_Mock::userFunction(
-			'get_option',
+			'register_activation_hook',
 			array(
-				'args'   => array( 'bh_wc_checkout_rate_limiter_log_level', 'info' ),
-				'return' => 'info',
+				'times' => 1,
 			)
 		);
 
 		\WP_Mock::userFunction(
-			'is_admin',
+			'register_deactivation_hook',
 			array(
-				'return' => false,
-			)
-		);
-
-		\WP_Mock::userFunction(
-			'get_current_user_id'
-		);
-
-		\WP_Mock::userFunction(
-			'wp_normalize_path',
-			array(
-				'return_arg' => true,
-			)
-		);
-
-		\WP_Mock::userFunction(
-			'get_option',
-			array(
-				'args'   => array( 'active_plugins' ),
-				'return' => array( 'woocommerce/woocommerce.php' ),
-			)
-		);
-
-		\WP_Mock::userFunction(
-			'did_action',
-			array(
-				'return' => false,
-			)
-		);
-
-		\WP_Mock::userFunction(
-			'add_action',
-			array(
-				'return' => false,
+				'times' => 1,
 			)
 		);
 

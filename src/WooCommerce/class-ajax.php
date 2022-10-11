@@ -8,16 +8,16 @@
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  * @link       https://BrianHenryIE.com
  * @since      1.0.0
- * @package    BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
+use BrianHenryIE\Checkout_Rate_Limiter\Settings_Interface;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Rate_Limiter\WordPress_Rate_Limiter;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
 
 /**
  * Hooked on wc_ajax_checkout earlier than WooCommerce's own processing code.
@@ -25,7 +25,7 @@ use BrianHenryIE\Checkout_Rate_Limiter\RateLimit\Rate;
  * @see WordPress_RateLimiter
  *
  * Class Ajax
- * @package BrianHenryIE\Checkout_Rate_Limiter\WooCommerce
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 class Ajax {
 

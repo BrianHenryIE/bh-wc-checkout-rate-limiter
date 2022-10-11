@@ -15,8 +15,6 @@ namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Pablo_Pacheco\WP_Namespace_Autoloader\WP_Namespace_Autoloader;
 
-require_once __DIR__ . '/strauss/autoload.php';
-
 $class_map_files = array(
 	__DIR__ . '/autoload-classmap.php',
 );
@@ -38,5 +36,7 @@ foreach ( $class_map_files as $class_map_file ) {
 	}
 }
 
-$wpcs_autoloader = new WP_Namespace_Autoloader();
+require_once __DIR__ . '/vendor-prefixed/autoload.php';
+
+$wpcs_autoloader = new WP_Namespace_Autoloader( array( 'classes_dir' => array( 'src' ) ) );
 $wpcs_autoloader->init();

@@ -7,12 +7,10 @@
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  * @link       https://BrianHenryIE.com
  * @since      1.0.0
- * @package    BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\API;
-
-use BrianHenryIE\WC_Venmo_Gateway\Admin\Admin;
+namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 interface Settings_Interface {
 

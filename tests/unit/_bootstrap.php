@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file for WP_Mock.
  *
- * @package           BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
 WP_Mock::setUsePatchwork( true );

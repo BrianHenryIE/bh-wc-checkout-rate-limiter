@@ -2,16 +2,16 @@
 /**
  *
  *
- * @package BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\WP_Includes;
 
 /**
  * Class Plugin_WP_Mock_Test
  *
- * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\I18n
+ * @coversDefaultClass \BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\I18n
  */
 class I18n_Unit_Test extends \Codeception\Test\Unit {
 
@@ -28,7 +28,7 @@ class I18n_Unit_Test extends \Codeception\Test\Unit {
 	/**
 	 * Verify load_plugin_textdomain is correctly called.
 	 *
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\I18n::load_plugin_textdomain
+	 * @covers ::load_plugin_textdomain
 	 */
 	public function test_load_plugin_textdomain() {
 
@@ -50,7 +50,7 @@ class I18n_Unit_Test extends \Codeception\Test\Unit {
 				'args'  => array(
 					'bh-wc-checkout-rate-limiter',
 					false,
-					'bh-wc-checkout-rate-limiter/languages/',
+					\WP_Mock\Functions::type( 'string' ),
 				),
 			)
 		);

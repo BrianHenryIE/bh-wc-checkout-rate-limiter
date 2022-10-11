@@ -2,14 +2,13 @@
 /**
  * Class Plugin_Test. Tests the root plugin setup.
  *
- * @package BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
 namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use \Exception;
-use BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter;
 
 /**
  * Verifies the plugin has been instantiated and added to PHP's $GLOBALS variable.

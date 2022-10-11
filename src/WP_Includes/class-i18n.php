@@ -8,11 +8,10 @@
  * @link       https://BrianHenryIE.com
  * @since      1.0.0
  *
- * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/includes
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\WP_Includes;
 
 /**
  * Define the internationalization functionality.
@@ -21,8 +20,8 @@ namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/includes
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
+ *
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  */
 class I18n {
@@ -39,7 +38,7 @@ class I18n {
 		load_plugin_textdomain(
 			'bh-wc-checkout-rate-limiter',
 			false,
-			plugin_basename( dirname( __FILE__, 2 ) ) . '/languages/'
+			dirname( plugin_basename( __FILE__ ), 3 ) . '/languages/'
 		);
 
 	}

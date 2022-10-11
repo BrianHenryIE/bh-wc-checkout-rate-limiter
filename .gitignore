@@ -40,7 +40,7 @@ cache
 
 node_modules
 scratch
-src/strauss/
+src/vendor-prefixed/
 wp-content/
 wordpress
 /vendor/
@@ -58,3 +58,6 @@ xdebug.sh
 7.4linux.sh
 DOCKER_ENV
 docker_tag
+
+vendor-prefixed
+dist-archive

@@ -5,11 +5,10 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/includes
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\WP_Includes;
 
 /**
  * Fired during plugin deactivation.
@@ -17,8 +16,8 @@ namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
  * This class defines all code necessary to run during the plugin's deactivation.
  *
  * @since      1.0.0
- * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/includes
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
+ *
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  */
 class Deactivator {

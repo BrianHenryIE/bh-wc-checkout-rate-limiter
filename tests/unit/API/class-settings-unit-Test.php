@@ -6,7 +6,9 @@
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\API;
+namespace BrianHenryIE\Checkout_Rate_Limiter;
+
+use BrianHenryIE\Checkout_Rate_Limiter\API\Settings;
 
 /**
  * @coversDefaultClass \BrianHenryIE\Checkout_Rate_Limiter\API\Settings

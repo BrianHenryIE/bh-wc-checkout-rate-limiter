@@ -2,14 +2,14 @@
 /**
  *
  *
- * @package BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter\WP_Includes;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\Settings_Interface;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Psr\Log\NullLogger;
 

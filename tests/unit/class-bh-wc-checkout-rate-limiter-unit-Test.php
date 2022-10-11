@@ -1,22 +1,21 @@
 <?php
 /**
- * @package BH_WC_Checkout_Rate_Limiter_Unit_Name
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\I18n;
 use BrianHenryIE\ColorLogger\ColorLogger;
-use Psr\Log\NullLogger;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
 use WP_Mock\Matcher\AnyInstance;
 
 /**
- * Class BH_WC_Checkout_Rate_Limiter_Unit_Test
+ * @coversDefaultClass \BrianHenryIE\Checkout_Rate_Limiter\BH_WC_Checkout_Rate_Limiter
  */
 class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 
@@ -31,7 +30,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::__construct
+	 * @covers ::__construct
 	 */
 	public function test_constructor(): void {
 
@@ -42,7 +41,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::set_locale
+	 * @covers ::set_locale
 	 */
 	public function test_set_locale_hooked() {
 
@@ -58,7 +57,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_woocommerce_ajax_hooks
+	 * @covers ::define_woocommerce_ajax_hooks
 	 */
 	public function test_woocommerce_ajax_hooks() {
 
@@ -75,7 +74,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers \BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_woocommerce_settings_hooks
+	 * @covers ::define_woocommerce_settings_hooks
 	 */
 	public function test_woocommerce_settings_hooks() {
 
@@ -103,7 +102,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
-	 * @covers \BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_plugins_page_hooks
+	 * @covers ::define_plugins_page_hooks
 	 */
 	public function test_plugins_page_hooks() {
 
@@ -129,7 +128,7 @@ class BH_WC_Checkout_Rate_Limiter_Unit_Test extends \Codeception\Test\Unit {
 
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter::define_admin_hooks
+	 * @covers ::define_admin_hooks
 	 */
 	public function test_admin_hooks() {
 

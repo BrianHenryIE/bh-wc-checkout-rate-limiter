@@ -3,15 +3,18 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\Settings_Interface;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Psr\Log\NullLogger;
 use \Exception;
 
+/**
+ * @coversDefaultClass \BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax
+ */
 class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax::__construct
+	 * @covers ::__construct
 	 *
 	 * @throws Exception
 	 */
@@ -25,7 +28,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax::rate_limit_checkout
+	 * @covers ::rate_limit_checkout
 	 *
 	 * @throws Exception
 	 */
@@ -44,7 +47,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax::rate_limit_checkout
+	 * @covers ::rate_limit_checkout
 	 *
 	 * @throws Exception
 	 */
@@ -64,7 +67,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax::rate_limit_checkout
+	 * @covers ::rate_limit_checkout
 	 *
 	 * @throws Exception
 	 */
@@ -101,7 +104,7 @@ class Ajax_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 
 	/**
-	 * @covers BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax::rate_limit_checkout
+	 * @covers ::rate_limit_checkout
 	 *
 	 * @throws Exception
 	 */

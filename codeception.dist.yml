@@ -18,16 +18,25 @@ extensions:
         - Codeception\Command\GenerateWPXMLRPC
 params:
     - .env.testing
+#    - .env.secret # Will error on GitHub Actions.
 coverage:
     enabled: true
     include:
-        - src/*
+        - /src/*
+        - /bh-wc-checkout-rate-limiter.php
+        - /uninstall.php
     exclude:
-        - src/strauss/*
+        - /vendor/*
+        - /dist-archive/*
+        - /tests/*
+        - /scratch/*
+        - /wordpress/*
+        - /vendor-prefixed/*
+        - /*/interface-*.*
         - /*/index.php
         - /*/*.txt
-        - src/autoload.php
-        - src/autoload-classmap.php
+        - autoload.php
+        - autoload-classmap.php
         - /*/*.css
         - /*/*.js
 bootstrap: bootstrap.php

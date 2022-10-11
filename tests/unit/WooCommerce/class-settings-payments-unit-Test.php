@@ -2,7 +2,7 @@
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\WooCommerce;
 
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\Settings_Interface;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Psr\Log\LogLevel;
 

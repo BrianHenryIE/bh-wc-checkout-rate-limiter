@@ -1,4 +1,4 @@
-[![WordPress tested 5.7](https://img.shields.io/badge/WordPress-v5.7%20tested-0073aa.svg)](https://wordpress.org/plugins/bh-wc-checkout-rate-limiter) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPStan ](.github/phpstan.svg)](https://github.com/szepeviktor/phpstan-wordpress)  [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wc-checkout-rate-limiter/)
+[![WordPress tested 6.0](https://img.shields.io/badge/WordPress-v6.0%20tested-0073aa.svg)](https://wordpress.org/plugins/bh-wc-checkout-rate-limiter) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPStan ](.github/phpstan.svg)](https://github.com/szepeviktor/phpstan-wordpress)  [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wc-checkout-rate-limiter/)
 
 # Checkout Rate Limiter
 
@@ -10,11 +10,11 @@ Rate limits `/?wc-ajax=checkout` by IP.
 
 Download the latest version from [releases](https://github.com/BrianHenryIE/bh-wc-checkout-rate-limiter/releases) and configure inside WooCommerce settings:
 
-![Settings page](./assets/screenshot-1.png "Configure the number of attempts per second")
+![Settings page](./.wordpress-org/screenshot-1.png "Configure the number of attempts per second")
 
 Then when the "Place Order" button on checkout is pressed too frequently, the customer will be blocked:
 
-![Checkout page](./assets/screenshot-2.png "Too Many Requests error message on checkout")
+![Checkout page](./.wordpress-org/screenshot-2.png "Too Many Requests error message on checkout")
 
 Three rates can be set, progressively punishing problematic people.
 
@@ -100,7 +100,7 @@ The correct way to address this problem for most people is with a [captcha](http
 
 Additionally, if you use Cloudflare, the logical thing seems to be to use [Cloudflare's rate limiting](https://www.cloudflare.com/rate-limiting/), but:
 
-![Cloudflare Rate Limiting Rule](./assets/cloudflare.png "Cloudflare Query strings are not allowed message")
+![Cloudflare Rate Limiting Rule](./.wordpress-org/cloudflare.png "Cloudflare Query strings are not allowed message")
 
 [Cloudflare's rate limiting](https://www.youtube.com/watch?v=monBTXwtzi8) could still be used on `/checkout/`. In the case I encountered, this would have helped because the bot was reloading `/checkout/` each time, but I think a better designed bot could submit the AJAX checkout repeatedly without reloading the whole page. 
 

@@ -2,17 +2,28 @@ parameters:
     level: 8
     paths:
         - src
+        - bh-wc-checkout-rate-limiter.php
     excludePaths:
-        - src/strauss/*
+        - vendor-prefixed
     bootstrapFiles:
         - phpstanbootstrap.php
-        - src/autoload.php
+        - autoload.php
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
-        - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
-        - vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
+        - vendor/wp-cli/wp-cli/php/class-wp-cli-command.php
+#        - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+#        - vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
+    scanFiles:
+        - vendor/antecedent/patchwork/Patchwork.php
     scanDirectories:
-        - src/strauss
-        - wp-content/plugins
+        - vendor-prefixed
+        - wp-content/plugins/woocommerce
         - vendor/wp-cli
     ignoreErrors:
+        # LoggerAwareTrait allows for null $logger, but we set it in the constructor.
         - '#LoggerInterface\|null#'
+        # PHPStan show errors when filters have more than two parameters.
+#        - '#^Function apply_filters(_ref_array)? invoked with \d parameters, 2 required\.$#'
+        # Parameter #1 $message of method a expects b, c given.
+#        - '/Parameter .* of .* expects .* given\./'
+        # Setting an empty array with type associative array in the comments prints this.
+#        - '/does not accept default value of type array\(\)/'

@@ -9,6 +9,11 @@
             "email": "BrianHenryIE@gmail.com"
         }
     ],
+    "autoload-dev": {
+        "psr-4": {
+            "BrianHenryIE\\Checkout_Rate_Limiter\\": ["tests/integration","tests/unit","tests/wpunit"]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
@@ -26,17 +31,25 @@
             "type": "git",
             "url": "https://github.com/brianhenryie/bh-wp-private-uploads"
         },
-        "wptrt/admin-notices": {
+        "brianhenryie/bh-wp-rate-limiter": {
             "type": "git",
-            "url": "https://github.com/brianhenryie/admin-notices"
+            "url": "https://github.com/brianhenryie/bh-wp-rate-limiter"
         },
         "brianhenryie/bh-wp-logger": {
             "type": "git",
             "url": "https://github.com/brianhenryie/bh-wp-logger"
         },
-        "0": {
-            "type": "path",
-            "url": "../license-server"
+        "brianhenryie/composer-phpstorm": {
+            "url": "https://github.com/BrianHenryIE/composer-phpstorm",
+            "type": "git"
+        },
+        "composer/composer": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        },
+        "nikolaposa/rate-limit": {
+            "url": "https://github.com/BrianHenryIE/rate-limit",
+            "type": "git"
         },
         "wordpress/wordpress": {
             "url": "https://github.com/WordPress/wordpress-develop",
@@ -46,29 +59,17 @@
             "url": "https://github.com/BrianHenryIE/transient-cache",
             "type": "git"
         },
-        "brianhenryie/bh-wp-rate-limiter": {
-            "type": "path",
-            "url": "../bh-wp-rate-limiter"
-        },
-        "3": {
-            "url": "https://github.com/BrianHenryIE/composer-phpstorm",
-            "type": "git"
-        },
-        "nikolaposa/rate-limit": {
-            "url": "https://github.com/BrianHenryIE/rate-limit",
-            "type": "git"
-        },
-        "5": {
-            "type": "composer",
-            "url": "https://wpackagist.org"
+        "wptrt/admin-notices": {
+            "type": "git",
+            "url": "https://github.com/brianhenryie/admin-notices"
         }
     },
     "require": {
         "php": ">=7.4",
         "brianhenryie/bh-wp-logger": "dev-master",
         "brianhenryie/bh-wp-rate-limiter": "dev-master",
-        "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master#015c9654459fd267cf12fa7846d3bf36b11c3bd7"
     },
     "require-dev": {
         "10up/wp_mock": "0.4.2",
@@ -98,6 +99,7 @@
         "woocommerce/woocommerce-sniffs": "*",
         "wordpress/wordpress": "*",
         "wp-cli/dist-archive-command": "dev-main",
+        "wp-cli/i18n-command": "^2.4",
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
         "wpackagist-plugin/woocommerce": "*",
@@ -113,7 +115,7 @@
             }
         },
         "strauss": {
-            "target_directory": "/src/strauss/",
+            "target_directory": "/vendor-prefixed/",
             "namespace_prefix": "BrianHenryIE\\Checkout_Rate_Limiter\\",
             "classmap_prefix": "BH_Checkout_Rate_Limiter_",
             "exclude_from_copy": {
@@ -128,7 +130,7 @@
         },
         "symlinks": {
             "wp-content": "wordpress/wp-content",
-            "src": "wp-content/plugins/bh-wc-checkout-rate-limiter"
+            ".": "wp-content/plugins/bh-wc-checkout-rate-limiter"
         },
         "phpstorm": {
             "exclude_folders": {
@@ -149,23 +151,44 @@
         "post-install-cmd": [
             "vendor/bin/strauss",
             "vendor/bin/wp core download --path=wordpress --allow-root || true;",
-            "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root --extra-php=\"define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );\" || true",
             "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
-            "mkdir -p wordpress/wp-content/uploads",
+            "@setup-wordpress",
             "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
             "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
         ],
         "post-update-cmd": [
             "vendor/bin/strauss",
-            "vendor/bin/wp core download --path=wordpress --allow-root || true; wp core update --allow-root || true",
-            "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root --extra-php=\"define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );\" || true",
+            "@setup-wordpress",
             "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
-            "mkdir -p wordpress/wp-content/uploads",
             "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
             "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
         ],
+        "setup-wordpress": [
+            "wp core download --path=wordpress --allow-root || true",
+            "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root --extra-php=\"\ndefine( 'WP_DEBUG_LOG', true );\ndefine( 'SCRIPT_DEBUG', true );\" || true",
+            "export $(grep -v '^#' .env.testing | xargs); vendor/bin/wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
+            "wp user create bob bob@example.org --user_pass=password || true;",
+            "wp core update --allow-root || true",
+            "patch ./wordpress/wp-config.php ./patches/wp-debug.diff -s -N -f --no-backup-if-mismatch --reject-file= || true;",
+            "patch ./wordpress/wp-includes/plugin.php ./patches/42670.diff -s -N -f --no-backup-if-mismatch --reject-file= || true;",
+            "mkdir -p wordpress/wp-content/uploads"
+        ],
+        "create-databases": [
+            "export $(grep -v '^#' .env.testing | xargs); [[ $(mysqld --version) =~ .*MariaDB.* ]] && mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED BY '\"$TEST_DB_PASSWORD\"';\" || mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED WITH mysql_native_password BY '\"$TEST_DB_PASSWORD\"';\";",
+            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_SITE_DB_NAME\"; USE \"$TEST_SITE_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_SITE_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
+            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_DB_NAME\"; USE \"$TEST_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
+            "@restore-acceptance-database"
+        ],
+        "delete-databases": [
+            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"DROP TABLE IF EXISTS $TEST_SITE_DB_NAME;\" mysql -e \"DROP TABLE IF EXISTS $TEST_DB_NAME;\"",
+            "export $(grep -v '^#' .env.testing | xargs); DB_DIR=$(mysql -e \"select @@datadir\" -N -B); rm -rf $DB_DIR$TEST_SITE_DB_NAME; rm -rf  $DB_DIR$TEST_DB_NAME;",
+            "mysql -e \"FLUSH TABLES;\""
+        ],
         "save-acceptance-database": [
             "export $(grep -v '^#' .env.testing | xargs); mysqldump -u $TEST_SITE_DB_USER -p$TEST_SITE_DB_PASSWORD  $TEST_SITE_DB_NAME > tests/_data/dump.sql;"
+        ],
+        "restore-acceptance-database": [
+            "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
         ],
         "coverage-tests": [
             "vendor/bin/codecept run unit --coverage unit.cov",
@@ -176,13 +199,17 @@
         "lint": [
             "vendor/bin/phpcbf || true",
             "vendor/bin/phpcs || true",
-            "vendor/bin/phpstan analyse --memory-limit 1G"
+            "vendor/bin/phpstan analyse --memory-limit 2G"
         ],
         "lint-changes": [
-            "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); vendor/bin/phpcbf $(echo $updated_files); vendor/bin/phpcs $(echo $updated_files); vendor/bin/phpstan analyse $(echo $updated_files) --memory-limit 1G"
+            "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); vendor/bin/phpcbf $(echo $updated_files); vendor/bin/phpcs $(echo $updated_files); vendor/bin/phpstan analyse $(echo $updated_files) --memory-limit 2G"
         ],
         "create-plugin-archive": [
-            "vendor/bin/wp dist-archive src --plugin-dirname=$(basename \"$PWD\")"
+            "vendor/bin/wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
+            "vendor/bin/wp dist-archive . ./dist-archive --plugin-dirname=$(basename \"$PWD\") --create-target-dir"
+        ],
+        "github-actions":  [
+            "act -P ubuntu-latest=shivammathur/node:latest"
         ]
     }
 }

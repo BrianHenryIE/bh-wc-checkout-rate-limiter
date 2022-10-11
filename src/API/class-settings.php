@@ -5,11 +5,12 @@
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  * @link       https://BrianHenryIE.com
  * @since      1.0.0
- * @package    BH_WC_Checkout_Rate_Limiter
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
 namespace BrianHenryIE\Checkout_Rate_Limiter\API;
 
+use BrianHenryIE\Checkout_Rate_Limiter\Settings_Interface;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger_Settings_Trait;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\WooCommerce_Logger_Settings_Interface;
@@ -22,7 +23,7 @@ use Psr\Log\LogLevel;
  * @see Settings_Payments
  *
  * Class Settings
- * @package BrianHenryIE\Checkout_Rate_Limiter\API
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interface {
 	use Logger_Settings_Trait;

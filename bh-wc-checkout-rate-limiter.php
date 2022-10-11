@@ -29,10 +29,8 @@ namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use BrianHenryIE\Checkout_Rate_Limiter\API\Settings;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
-use BrianHenryIE\Checkout_Rate_Limiter\Includes\Activator;
-use BrianHenryIE\Checkout_Rate_Limiter\Includes\Deactivator;
-use BrianHenryIE\Checkout_Rate_Limiter\Includes\BH_WC_Checkout_Rate_Limiter;
-
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Activator;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Deactivator;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {

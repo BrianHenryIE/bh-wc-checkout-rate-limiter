@@ -2,25 +2,24 @@
 /**
  * The file that defines the core plugin class
  *
- * A class definition that includes attributes and functions used across both the
+ * A class definition that WP_Includes attributes and functions used across both the
  * frontend-facing side of the site and the admin area.
  *
  * @link       https://BrianHenryIE.com
  * @since      1.0.0
  *
- * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/includes
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
  */
 
-namespace BrianHenryIE\Checkout_Rate_Limiter\Includes;
+namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Admin;
 use BrianHenryIE\Checkout_Rate_Limiter\Admin\Plugins_Page;
 use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Ajax;
-use BrianHenryIE\Checkout_Rate_Limiter\API\Settings_Interface;
+use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
+use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\I18n;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
 
 /**
  * The core plugin class.
@@ -32,8 +31,8 @@ use BrianHenryIE\Checkout_Rate_Limiter\WooCommerce\Settings_Payments;
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    BH_WC_Checkout_Rate_Limiter
- * @subpackage BH_WC_Checkout_Rate_Limiter/includes
+ * @package brianhenryie/bh-wc-checkout-rate-limiter
+ *
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  */
 class BH_WC_Checkout_Rate_Limiter {
@@ -84,7 +83,6 @@ class BH_WC_Checkout_Rate_Limiter {
 		$plugin_i18n = new I18n();
 
 		add_action( 'plugins_loaded', array( $plugin_i18n, 'load_plugin_textdomain' ) );
-
 	}
 
 	/**
@@ -97,7 +95,6 @@ class BH_WC_Checkout_Rate_Limiter {
 		$ajax = new Ajax( $this->settings, $this->logger );
 
 		add_action( 'wc_ajax_checkout', array( $ajax, 'rate_limit_checkout' ), 0 );
-
 	}
 
 	/**
@@ -115,7 +112,6 @@ class BH_WC_Checkout_Rate_Limiter {
 		add_filter( 'woocommerce_get_settings_checkout', array( $settings_advanced, 'settings' ), 10, 2 );
 
 		add_action( 'woocommerce_admin_field_attempts_per_interval', array( $settings_advanced, 'print_attempts_per_interval_settings_field' ) );
-
 	}
 
 	/**
