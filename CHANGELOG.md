@@ -5,6 +5,7 @@
 * Fix: Check for `wc_get_current_admin_url()` before using it
 * Fix: Accept `null` in `plugin_action_links_{}` function
 * Update project structure
+* Fix: Undefined array key "section" when determining if we're on the settings page
 
 ## 1.1.1 – 13-May-2022
 

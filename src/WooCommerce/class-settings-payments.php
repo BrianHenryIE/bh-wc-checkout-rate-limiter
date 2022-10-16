@@ -75,7 +75,7 @@ class Settings_Payments {
 		$query_parts = array();
 		wp_parse_str( $url_parts['query'], $query_parts );
 
-		if ( 'checkout-rate-limiting' !== $query_parts['section'] ) {
+		if ( ! isset( $query_parts['section'] ) || 'checkout-rate-limiting' !== $query_parts['section'] ) {
 			return;
 		}
 
