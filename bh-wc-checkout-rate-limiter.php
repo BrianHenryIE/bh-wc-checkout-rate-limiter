@@ -23,6 +23,9 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       bh-wc-checkout-rate-limiter
  * Domain Path:       /languages
+ *
+ * GitHub Plugin URI: https://github.com/BrianHenryIE/bh-wc-checkout-rate-limiter
+ * Release Asset:     true
  */
 
 namespace BrianHenryIE\Checkout_Rate_Limiter;
