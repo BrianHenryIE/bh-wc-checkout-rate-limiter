@@ -1,11 +1,12 @@
 # Changelog
 
-## 1.1.2 – 10-October-2022
+## 1.2.0 – 15-October-2022
 
+* Add: Git Updater
 * Fix: Check for `wc_get_current_admin_url()` before using it
 * Fix: Accept `null` in `plugin_action_links_{}` function
-* Update project structure
 * Fix: Undefined array key "section" when determining if we're on the settings page
+* Update project structure
 
 ## 1.1.1 – 13-May-2022
 
