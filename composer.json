@@ -65,14 +65,14 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "alleyinteractive/wordpress-autoloader": "^1.1",
+        "ext-curl": "*",
         "brianhenryie/bh-wp-logger": "dev-master",
         "brianhenryie/bh-wp-rate-limiter": "dev-master",
-        "ext-curl": "*",
-        "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master#015c9654459fd267cf12fa7846d3bf36b11c3bd7"
+        "php": ">=7.4"
     },
     "require-dev": {
-        "10up/wp_mock": "0.4.2",
+        "10up/wp_mock": "*",
         "antecedent/patchwork": "^2.1",
         "brianhenryie/color-logger": "^1.0",
         "brianhenryie/composer-phpstorm": "dev-master",
@@ -91,11 +91,10 @@
         "lucatume/wp-browser": "*",
         "php-stubs/woocommerce-stubs": "^6.4",
         "phpcompatibility/phpcompatibility-wp": "*",
-        "phpstan/extension-installer": "^1.1",
+        "phpstan/extension-installer": "*",
         "phpunit/phpcov": "*",
         "squizlabs/php_codesniffer": "*",
-        "szepeviktor/phpstan-wordpress": "^0.7.2",
-        "voku/portable-ascii": "dev-master",
+        "szepeviktor/phpstan-wordpress": "*",
         "woocommerce/woocommerce-sniffs": "*",
         "wordpress/wordpress": "*",
         "wp-cli/dist-archive-command": "dev-main",
@@ -103,15 +102,15 @@
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
         "wpackagist-plugin/woocommerce": "*",
-        "wpackagist-theme/storefront": "^4.1"
+        "wpackagist-theme/storefront": "*"
     },
     "extra": {
         "patches": {
             "jaschilz/php-coverage-badger": {
                 "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
             },
-            "10up/wp_mock": {
-                "Add AnyObject matcher": "https://github.com/BrianHenryIE/wp_mock/pull/1.patch"
+            "wp-cli/dist-archive-command": {
+                "Add Increment Version": "https://github.com/BrianHenryIE/dist-archive-command/commit/f37c375ba8069c9160d642dd0c00435e0f1c4804.patch"
             }
         },
         "strauss": {
@@ -135,6 +134,7 @@
         "phpstorm": {
             "exclude_folders": {
                 "folders": [
+                    "vendor/php-stubs/woocommerce-stubs",
                     "vendor/wordpress/wordpress/src",
                     "vendor/wordpress/wordpress/build",
                     "wp-content/plugins/bh-wc-checkout-rate-limiter",
@@ -203,6 +203,9 @@
         ],
         "lint-changes": [
             "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); vendor/bin/phpcbf $(echo $updated_files); vendor/bin/phpcs $(echo $updated_files); vendor/bin/phpstan analyse $(echo $updated_files) --memory-limit 2G"
+        ],
+        "php-compatibility": [
+            "vendor/bin/phpcs -p src vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 7.4-"
         ],
         "create-plugin-archive": [
             "vendor/bin/wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
