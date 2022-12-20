@@ -123,6 +123,15 @@
                     "~psr/log/Psr/Log/Test.*~"
                 ]
             },
+            "exclude_from_prefix": {
+                "packages": [
+                ],
+                "namespaces": [
+                ],
+                "file_patterns": [
+                    "#^psr/log.*$#"
+                ]
+            },
             "namespace_replacement_patterns": {
                 "/BrianHenryIE\\\\(.*)/": "BrianHenryIE\\Checkout_Rate_Limiter\\\\$1"
             }
