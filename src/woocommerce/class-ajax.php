@@ -90,6 +90,7 @@ class Ajax {
 						'exception' => $e,
 					)
 				);
+				// The behaviour here on an error is to NOT rate-limit.
 				return;
 			}
 
@@ -106,6 +107,7 @@ class Ajax {
 						'interval'             => $interval,
 						'allowed_access_count' => $allowed_access_count,
 						'status'               => $status,
+						'ip_address'           => $ip_address,
 					)
 				);
 
