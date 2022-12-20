@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 - 20-December-2022
+
+* Add: admin notice when incorrectly installed from GitHub repo zip rather than GitHub releases archive #12
+* Fix: unprefixed psr/simple-cache clash with another plugin #16
+* Improve: logging #13
+* Dependency: alleyinteractive/wordpress-autoloader
+* Update project structure: lowercase directories
+* Update GitHub Actions
+
 ## 1.2.0 – 15-October-2022
 
 * Add: Git Updater
