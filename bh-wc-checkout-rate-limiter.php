@@ -35,12 +35,14 @@ use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Activator;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Deactivator;
 use Error;
+use Exception;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-	throw new \Exception( 'WPINC not defined' );
+	throw new Exception( 'WPINC not defined' );
 }
 
+// If the GitHub repo was installed without running `composer install` to add the dependencies, the autoload will fail.
 try {
 	require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 } catch ( Error $error ) {
