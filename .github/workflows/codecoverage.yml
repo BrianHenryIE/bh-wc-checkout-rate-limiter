@@ -47,27 +47,19 @@ jobs:
           tools: composer
           extensions: zip
 
-      - name: Update configs for GA
-        run: |
-          find . -depth \( -name '.env.testing' \) -exec sed -i "s/=\"127.0.0.1\"/=\"127.0.0.1:${{ job.services.mysql.ports['3306'] }}\"/g" {} +
-          find . -depth \( -name 'composer.json' \) -exec sed -i "s/127.0.0.1/127.0.0.1:${{ job.services.mysql.ports['3306'] }}/g" {} +
-          find . -depth \( -name '.env.testing' -o -name '*.cest' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
-          find . -depth \( -name 'dump.sql' \) -exec sed -i "s/localhost:8080\/$PLUGIN_SLUG/localhost:8080/g" {} +
+      - name: Update environment config for GitHub Actions
         env:
-          PLUGIN_SLUG: bh-wc-checkout-rate-limiter
+          PLUGIN_SLUG: ${{ github.event.repository.name }}
+        run: |
+          find . -depth \( -name '.env.testing' \) -exec sed -i "s/TEST_SITE_DB_HOST=\"127.0.0.1\"/TEST_SITE_DB_HOST=\"127.0.0.1:${{ job.services.mysql.ports['3306'] }}\"/g" {} +
+          find . -depth \( -name '.env.testing' -o -name '*.cest' \) -exec sed -i "s/localhost:8080\/${{ env.PLUGIN_SLUG }}/localhost:8080/g" {} +
+          find . -depth \( -name 'dump.sql' \) -exec sed -i "s/localhost:8080\/${{ env.PLUGIN_SLUG }}/localhost:8080/g" {} +
+          find tests -depth \( -name '*.yml' \) -exec sed -i "s/%TEST_DB_HOST%/127.0.0.1:${{ job.services.mysql.ports['3306'] }}/g" {} +
 
       - name: Read .env.testing
         uses: c-py/action-dotenv-to-setenv@v2
         with:
           env-file: .env.testing
-
-      #      - name: Read .env.github
-      #        uses: c-py/action-dotenv-to-setenv@v2
-      #        with:
-      #          env-file: .env.github
-      #
-      #      - name: Set env database host w/port
-      #        run: echo "TEST_SITE_DB_HOST=127.0.0.1:${{ job.services.mysql.ports['3306'] }}" >> $GITHUB_ENV
 
       - name: Configure MySQL
         run: |
@@ -75,26 +67,25 @@ jobs:
           mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_SITE_DB_NAME"; USE "$TEST_SITE_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_SITE_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
           mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO '"$TEST_DB_USER"'@'%';";
 
-#      - name: Create Composer auth.json
-#        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
-
       - name: Run composer install
-        uses: php-actions/composer@v6
-        with:
-          args: --ignore-platform-reqs
+        continue-on-error: true
+        run: composer install
 
       - name: Create wpconfig ... the composer.json creation didn't work
         run: |
           export $(grep -v '^#' .env.testing | xargs);
           sudo vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root --extra-php="define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );"
+          tail -n 1000 wordpress/wp-config.php
+
+      - name: Run composer post-install-cmd
+        continue-on-error: true
+        run: composer run-script post-install-cmd
+
+      - name: Check database
+        run: vendor/bin/wp db check --debug
 
       - name: Allow writing to wp-content
         run: sudo chmod -R a+w wp-content
-
-      #      - name: Update site URL to match GA
-      #        run: |
-      #          vendor/bin/wp option update home 'http://localhost:8080'
-      #          vendor/bin/wp option update siteurl 'http://localhost:8080'
 
       - name: Clear previous code coverage
         run: |
@@ -103,10 +94,10 @@ jobs:
           cd ../../..
 
       - name: Run unit tests
-        run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage unit.cov || true;
+        run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage unit.cov --debug || true;
 
       - name: Run wpunit tests
-        run: XDEBUG_MODE=coverage vendor/bin/codecept run wpunit --coverage wpunit.cov || true;
+        run: XDEBUG_MODE=coverage vendor/bin/codecept run wpunit --coverage wpunit.cov --debug || true;
 
       - name: Merge code coverage
         run: vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;
@@ -120,10 +111,12 @@ jobs:
           git add *
           cd ../../..
 
-      - name: Discard environment changes before commiting other changes
+      - name: Discard environment changes before committing other changes
         run: |
           git checkout -- .env.testing
           git checkout -- tests/_data/dump.sql
+          git checkout -- tests/integration.suite.yml
+          git checkout -- tests/wpunit.suite.yml
 
       - name: Commit code coverage to gh-pages
         uses: stefanzweifel/git-auto-commit-action@v4.1.1
