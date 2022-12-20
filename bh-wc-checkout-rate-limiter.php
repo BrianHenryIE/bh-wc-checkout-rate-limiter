@@ -34,13 +34,22 @@ use BrianHenryIE\Checkout_Rate_Limiter\API\Settings;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Logger\Logger;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Activator;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Deactivator;
+use Error;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	throw new \Exception( 'WPINC not defined' );
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
+try {
+	require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
+} catch ( Error $error ) {
+	$display_download_from_releases_error_notice = function() {
+		echo '<div class="notice notice-error"><p><b>Checkout Rate Limiter missing dependencies.</b> Please <a href="https://github.com/BrianHenryIE/bh-wc-checkout-rate-limiter/releases">install the distribution archive from the GitHub Releases page</a>. It appears you downloaded the GitHub repo and installed that as the plugin.</p></div>';
+	};
+	add_action( 'admin_notices', $display_download_from_releases_error_notice );
+	return;
+}
 
 define( 'BH_WC_CHECKOUT_RATE_LIMITER_VERSION', '1.2.0' );
 define( 'BH_WC_CHECKOUT_RATE_LIMITER_BASENAME', plugin_basename( __FILE__ ) );
