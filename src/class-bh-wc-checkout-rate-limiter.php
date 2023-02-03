@@ -95,6 +95,8 @@ class BH_WC_Checkout_Rate_Limiter {
 		$ajax = new Ajax( $this->settings, $this->logger );
 
 		add_action( 'wc_ajax_checkout', array( $ajax, 'rate_limit_checkout' ), 0 );
+		
+		do_action( 'bh_wcr_define_woocommerce_ajax_hooks', $ajax );
 	}
 
 	/**
