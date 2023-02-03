@@ -110,6 +110,8 @@ class Ajax {
 						'ip_address'           => $ip_address,
 					)
 				);
+				
+				do_action( 'bh_wcr_checkout_rate_limit_exceeded', $rate_limiter );
 
 				// No real point adding headers here.
 				wp_send_json_error( null, 429 );
