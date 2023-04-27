@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 - 26-April-2023
+
+* Update dependency: bh-wp-logger – performance improvements
+
 ## 1.3.0 - 20-December-2022
 
 * Add: admin notice when incorrectly installed from GitHub repo zip rather than GitHub releases archive #12
