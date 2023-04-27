@@ -44,6 +44,13 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			function( $settings ) {}
 		);
 
+		\Patchwork\redefine(
+			array( \BrianHenryIE\Checkout_Rate_Limiter\API\Settings::class, 'get_log_level' ),
+			function() {
+				return 'info';
+			}
+		);
+
 		\WP_Mock::userFunction(
 			'plugin_dir_path',
 			array(
