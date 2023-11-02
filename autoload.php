@@ -15,7 +15,9 @@ namespace BrianHenryIE\Checkout_Rate_Limiter;
 
 use BrianHenryIE\Checkout_Rate_Limiter\Alley_Interactive\Autoloader\Autoloader;
 
-require_once __DIR__ . '/vendor-prefixed/autoload.php';
+// Error is caught in root plugin file.
+// phpcs:disable WordPress.PHP.NoSilencedErrors.Discouraged
+@require_once __DIR__ . '/vendor-prefixed/autoload.php';
 
 Autoloader::generate(
 	'BrianHenryIE\Checkout_Rate_Limiter',

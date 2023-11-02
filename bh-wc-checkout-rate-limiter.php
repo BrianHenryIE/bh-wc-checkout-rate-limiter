@@ -36,6 +36,7 @@ use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Activator;
 use BrianHenryIE\Checkout_Rate_Limiter\WP_Includes\Deactivator;
 use Error;
 use Exception;
+use Throwable;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -45,7 +46,7 @@ if ( ! defined( 'WPINC' ) ) {
 // If the GitHub repo was installed without running `composer install` to add the dependencies, the autoload will fail.
 try {
 	require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
-} catch ( Error $error ) {
+} catch ( Throwable $error ) {
 	$display_download_from_releases_error_notice = function() {
 		echo '<div class="notice notice-error"><p><b>Checkout Rate Limiter missing dependencies.</b> Please <a href="https://github.com/BrianHenryIE/bh-wc-checkout-rate-limiter/releases">install the distribution archive from the GitHub Releases page</a>. It appears you downloaded the GitHub repo and installed that as the plugin.</p></div>';
 	};
