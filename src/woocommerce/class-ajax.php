@@ -73,6 +73,8 @@ class Ajax {
 
 		$ip_address = \WC_Geolocation::get_ip_address();
 
+		$block = false;
+
 		foreach ( $limits as $interval => $allowed_access_count ) {
 
 			$this->logger->debug( "Checking {$ip_address} rate limit {$allowed_access_count} per {$interval} seconds." );
@@ -91,7 +93,7 @@ class Ajax {
 					)
 				);
 				// The behaviour here on an error is to NOT rate-limit.
-				return;
+				continue;
 			}
 
 			/**
@@ -111,8 +113,7 @@ class Ajax {
 					)
 				);
 
-				// No real point adding headers here.
-				wp_send_json_error( null, 429 );
+				$block = true;
 			} else {
 
 				$this->logger->debug(
@@ -126,6 +127,9 @@ class Ajax {
 			}
 		}
 
+		if ( $block ) {
+			// No real point adding headers here.
+			wp_send_json_error( null, 429 );
+		}
 	}
-
 }
