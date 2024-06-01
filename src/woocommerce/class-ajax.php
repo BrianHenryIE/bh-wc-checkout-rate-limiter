@@ -112,6 +112,8 @@ class Ajax {
 						'ip_address'           => $ip_address,
 					)
 				);
+				
+				do_action( 'bh_wcr_checkout_rate_limit_exceeded', $rate_limiter );
 
 				$block = true;
 			} else {
